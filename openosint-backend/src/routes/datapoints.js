@@ -21,6 +21,8 @@ const multerUpload = multer({ storage: storage });
 router.post('/upload', multerUpload.single('file'), (req, res) => {
     const datapoint = req.body
     datapoint.filename = req.file.filename
+
+    console.log('Received datapoint:', datapoint)
     
     datapointModel.create(datapoint)
         .then((createdDatapoint) => {

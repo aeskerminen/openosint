@@ -15,8 +15,6 @@ app.use(cors({
 
 app.use('/datapoints', datapointsRouter)
 
-
-
 app.get('/', (req, res) => {
   res.send('Backend root')
 })

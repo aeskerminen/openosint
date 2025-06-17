@@ -10,8 +10,8 @@ const datapointSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-
-}, { timestamps: true })
+    
+},{timestamps: true, _id: true})
 
 const datapointModel = mongoose.model('Datapoint', datapointSchema)
 module.exports = datapointModel
