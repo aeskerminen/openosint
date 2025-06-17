@@ -1,7 +1,7 @@
 const App = () => {
   return (
-    <div>
-      temp
+    <div className="flex flex-col items-center justify-center h-screen w-screen">
+      <p>OpenOSINT Frontend</p>
     </div>
   )
 }
