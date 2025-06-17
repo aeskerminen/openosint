@@ -35,7 +35,7 @@ const DatapointExplorer = () => {
             {/* Form for uploading a picture (datapoint)*/}
             <div className="flex-1">
                 <form className="flex flex-row items-center gap-2 bg-[#101010] p-4">
-                    <input type="file" accept="image/*" className="bg-[#1a1a1a] text-white px-4 py-2 rounded" onChange={(e) => { setSelectedFile(e.target.files[0]) }} />
+                    <input type="file" accept="image/*" className="bg-[#1a1a1a] text-white px-4 py-2 rounded" onChange={(e) => { setSelectedFile(e.currentTarget.files ? e.currentTarget.files[0] : null) }} />
                     <button type="submit" className=" text-white px-4 py-2 rounded" onClick={handleSubmit} >
                         Upload Datapoint
                     </button>
