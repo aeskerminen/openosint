@@ -20,9 +20,8 @@ const multerUpload = multer({ storage: storage });
 
 router.post('/upload', multerUpload.single('file'), (req, res) => {
     const datapoint = req.body
-    console .log('Received datapoint:', datapoint)
-    console.log('Received file:', req.file)
-    /*
+    datapoint.filename = req.file.filename
+    
     datapointModel.create(datapoint)
         .then((createdDatapoint) => {
             res.status(201).send(`Datapoint created with ID: ${createdDatapoint._id}`).end()
@@ -31,7 +30,6 @@ router.post('/upload', multerUpload.single('file'), (req, res) => {
             console.error('Error creating datapoint:', err)
             res.status(500).send('Error creating datapoint').end()
         })
-            */
 })
 
 router.get('/get', (req, res) => {
