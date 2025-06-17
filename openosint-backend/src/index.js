@@ -1,8 +1,9 @@
 const express = require('express')
 const datapointsRouter = require('./routes/datapoints')
 
+const config = require('./config')
+
 const app = express()
-const port = 3000
 
 app.use(express.json())
 
@@ -12,6 +13,6 @@ app.get('/', (req, res) => {
   res.send('Backend root')
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+app.listen(config.PORT, () => {
+  console.log(`Example app listening on port ${config.PORT}`)
 })
