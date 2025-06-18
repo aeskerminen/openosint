@@ -1,5 +1,5 @@
-const db = require('../mongodb')
-const mongoose = require('mongoose')
+import db from '../mongodb.js';
+import mongoose from 'mongoose';
 
 const datapointSchema = new mongoose.Schema({
     name: {
@@ -13,5 +13,5 @@ const datapointSchema = new mongoose.Schema({
     
 },{timestamps: true, _id: true})
 
-const datapointModel = mongoose.model('Datapoint', datapointSchema)
-module.exports = datapointModel
+const datapointModel = mongoose.model('Datapoint', datapointSchema);
+export default datapointModel;

@@ -1,9 +1,8 @@
-const express = require('express')
-const cors = require('cors')
-const morgan = require('morgan')
-const datapointsRouter = require('./routes/datapoints')
-
-const config = require('./config')
+import express from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
+import datapointsRouter from './routes/datapoints.js';
+import config from './config.js';
 
 const app = express()
 

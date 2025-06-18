@@ -1,42 +1,32 @@
-const express = require('express')
-const path = require('path')
-const router = express.Router()
+import express from 'express';
+import path from 'path';
+import fs from 'fs';
+import { fileTypeFromBuffer } from 'file-type';
+import multer from 'multer';
+import datapointModel from '../models/Datapoint.js';
 
-const fs = require('fs')
-
-const datapointModel = require('../models/Datapoint')
-
-const multer = require('multer')
+const router = express.Router();
 
 const storage = multer.memoryStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/');
     },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + path.extname(file.originalname));
-    },
 });
 
 const multerUpload = multer({ storage: storage });
 
-const asyncWrapper = fn => {
-    return (req, res, next) => {
-        return fn(req, res, next).catch(next);
-    }
-};
-
-router.post('/upload', multerUpload.single('file'), asyncWrapper(async (req, res, next) => {
+router.post('/upload', multerUpload.single('file'), async (req, res) => {
     const datapoint = req.body
     datapoint.filename = (Date.now() + '-' + Math.round(Math.random() * 1E9)) + path.extname(req.file.originalname)
+    
+    const type = await fileType.fromBuffer(req.file.buffer)
+    if (!type || !type.mime.startsWith('image/')) {
+        return res.status(400).send('File must be an image').end()
+    }
 
     datapointModel.create(datapoint)
         .then((createdDatapoint) => {
             const filePath = path.join(__dirname, '../../uploads', datapoint.filename)
-
-            // ENSURE THAT THE FILE IS AN IMAGE (WIP)
-
-
 
             fs.writeFile(filePath, req.file.buffer, (err) => {
                 if (err) {
@@ -52,7 +42,7 @@ router.post('/upload', multerUpload.single('file'), asyncWrapper(async (req, res
             console.error('Error creating datapoint:', err)
             res.status(500).send('Error creating datapoint').end()
         })
-}))
+})
 
 
 router.get('/get', (req, res) => {
@@ -64,4 +54,4 @@ router.get('/get/:id', (req, res) => {
     res.send(`Datapoint with ID: ${id}`)
 })
 
-module.exports = router
+export default router;
