@@ -1,12 +1,11 @@
 import express from 'express';
 import path from 'path';
-import fs from 'fs';
+import fs, { stat } from 'fs';
 import { fileTypeFromBuffer } from 'file-type';
 import multer from 'multer';
 import datapointModel from '../models/Datapoint.js';
 
 import config from '../config.js';
-import { json } from 'stream/consumers';
 import redis from '../redisClient.js';
 
 import { v4 as uuidv4 } from 'uuid';
@@ -65,6 +64,13 @@ router.post('/upload', multerUpload.single('file'), async (req, res) => {
             console.error('Error creating datapoint:', err)
             res.status(500).send('Error creating datapoint').end()
         })
+})
+
+router.get('/status/:jobID', async (req, res) => {
+    const jobID = req.params.jobID;
+    const status = await redis.get(`status:${jobID}`);
+
+    res.json({ status }).end()
 })
 
 
