@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import datapointService from "../datapoint_explorer/services/datapointService"
+import { useJobStatus } from "./hooks/useJobStatus";
 
 const DatapointExplorer = () => {
 
@@ -17,13 +18,15 @@ const DatapointExplorer = () => {
         const formData = new FormData();
         formData.append("file", selectedFile);
         formData.append("name", selectedFile.name);
-        
+
         console.log("File ready to be uploaded:", selectedFile);
 
         datapointService.uploadDatapoint(formData)
             .then(response => {
                 console.log("File uploaded successfully:", response);
                 setSelectedFile(null);
+                setStatus("processing")
+                setJobID(response.data.jobID);
                 fileInputRef.current!.value = "";
             })
             .catch(error => {
@@ -31,6 +34,13 @@ const DatapointExplorer = () => {
                 alert("Failed to upload file. Please try again.");
             });
     };
+
+    const [jobID, setJobID] = useState<string>("");
+    const [status, setStatus] = useState<string>("idle");
+
+    useJobStatus(jobID, () => {
+        setStatus("done")
+    })
 
     return (
         <div className="flex flex-col h-screen items-center justify-center flex-1">
@@ -45,6 +55,8 @@ const DatapointExplorer = () => {
                     </button>
                 </form>
             </div>
+
+            <div>Status: {status}</div>
 
             {/* List of all datapoints fetched from the backend */}
             <div className="flex-1">Datapoints</div>
