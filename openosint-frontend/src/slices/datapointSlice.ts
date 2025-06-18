@@ -1,32 +1,30 @@
 import { createSlice } from '@reduxjs/toolkit'
-import type { PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../store'
+import type { Datapoint } from '../types/datapoint'
 
 interface datapointState {
-  value: number
+    value: Array<Datapoint>
 }
 
 const initialState: datapointState = {
-  value: 0,
+    value: [],
 }
 
 export const datapointSlice = createSlice({
-  name: 'datapoints',
-  initialState,
-  reducers: {
-    increment: (state) => {
-      state.value += 1
+    name: 'datapoints',
+    initialState,
+    reducers: {
+        add: (state, action) => {
+            state.value.push(action.payload)
+        },
+        remove: (state, action) => {
+            state.value = state.value.filter((datapoint) => datapoint.id !== action.payload.id)
+        },
+
     },
-    decrement: (state) => {
-      state.value -= 1
-    },
-    incrementByAmount: (state, action: PayloadAction<number>) => {
-      state.value += action.payload
-    },
-  },
 })
 
-export const { increment, decrement, incrementByAmount } = datapointSlice.actions
+export const { add, remove } = datapointSlice.actions
 
 export const selectCount = (state: RootState) => state.datapoints.value
 

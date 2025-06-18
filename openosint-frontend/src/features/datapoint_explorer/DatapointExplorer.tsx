@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 import datapointService from "../datapoint_explorer/services/datapointService"
 import { useJobStatus } from "./hooks/useJobStatus";
+import { useDispatch, useSelector } from "react-redux";
+import { add, remove } from "../../slices/datapointSlice";
+import type { Datapoint } from "../../types/datapoint";
 
 const DatapointExplorer = () => {
 
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+
+    const datapoints = useSelector((state: any) => state.datapoints.value);
+    const dispatch = useDispatch()
 
     const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -64,7 +70,9 @@ const DatapointExplorer = () => {
                 <p className="text-xl font-bold mb-4">Datapoints</p>
                 <div className="bg-[#1a1a1a] p-4 rounded">
                     <p className="text-white">This section will display all uploaded datapoints.</p>
-
+                    {datapoints.map((datapoint : Datapoint) => {
+                        return <div>this is a datapoint: {datapoint.id}</div>
+                    })}
                 </div>
             </div>
 
