@@ -19,7 +19,7 @@ router.post('/upload', multerUpload.single('file'), async (req, res) => {
     const datapoint = req.body
     datapoint.filename = (Date.now() + '-' + Math.round(Math.random() * 1E9)) + path.extname(req.file.originalname)
     
-    const type = await fileType.fromBuffer(req.file.buffer)
+    const type = await fileTypeFromBuffer(req.file.buffer)
     if (!type || !type.mime.startsWith('image/')) {
         return res.status(400).send('File must be an image').end()
     }
