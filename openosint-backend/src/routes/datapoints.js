@@ -8,7 +8,7 @@ const multer = require('multer')
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/'); 
+        cb(null, 'uploads/');
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -16,17 +16,24 @@ const storage = multer.diskStorage({
     }
 });
 
-const multerUpload = multer({ storage: storage });
+const multerUpload = multer({ storage: multer.memoryStorage });
 
 router.post('/upload', multerUpload.single('file'), (req, res) => {
     const datapoint = req.body
     datapoint.filename = req.file.filename
 
-    console.log('Received datapoint:', datapoint)
-    
     datapointModel.create(datapoint)
         .then((createdDatapoint) => {
-            res.status(201).send(`Datapoint created with ID: ${createdDatapoint._id}`).end()
+            const filePath = path.join(__dirname, '../../uploads', req.file.filename)
+            fs.writeFile(filePath, req.file.buffer, (err) => {
+                if (err) {
+                    console.error('Error saving file:', err)
+                    return res.status(500).send('Error saving file').end()
+                } else {
+                    res.status(201).send(`Datapoint created with ID: ${createdDatapoint._id}`).end()
+                }
+            })
+
         })
         .catch((err) => {
             console.error('Error creating datapoint:', err)
