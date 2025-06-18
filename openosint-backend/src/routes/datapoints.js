@@ -39,7 +39,7 @@ router.post('/upload', multerUpload.single('file'), async (req, res) => {
 
                     const jobID = uuidv4()
                     const inputPath = filePath
-                    const outputPath = outputDir + '/' + jobID + '.json'
+                    const outputPath = outputDir + '/' + jobID + '.png'
 
                     const jobData = JSON.stringify({
                         jobID: jobID,

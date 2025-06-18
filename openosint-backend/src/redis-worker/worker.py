@@ -17,12 +17,12 @@ while True:
 
         try:
             r.set(f'status:{job_id}', 'processing')
-            subprocess.run(['python3', 'dummy_inference.py', input_path, output_path], check=True)
+            subprocess.run(['./run_inference.sh', input_path, output_path], check=True)
 
-            with open(output_path, 'r') as f:
-                result = f.read()
+            #with open(output_path, 'r') as f:
+            #    result = f.read()
 
-            r.set(f'result:{job_id}', result, ex=300)
+            #r.set(f'result:{job_id}', result, ex=300)
             r.set(f'status:{job_id}', 'done')
             r.publish('ml:results', job_id)
 
