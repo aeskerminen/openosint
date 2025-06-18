@@ -6,13 +6,14 @@ import config from './config.js';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { createClient } from 'redis'
+import config from './config.js';
 
 const app = express()
 
 const httpServer = createServer(app);
 const socketIOserver = new Server(httpServer, { cors: { origin: '*' } });
 
-const redisSub = createClient({ socket: { host: 'localhost', port: 3004 } })
+const redisSub = createClient({ socket: { host: 'localhost', port:  config.REDIS_PORT} })
 
 app.use(express.json())
 app.use(morgan('dev'))
