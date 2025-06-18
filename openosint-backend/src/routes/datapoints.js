@@ -66,21 +66,4 @@ router.post('/upload', multerUpload.single('file'), async (req, res) => {
         })
 })
 
-router.get('/status/:jobID', async (req, res) => {
-    const jobID = req.params.jobID;
-    const status = await redis.get(`status:${jobID}`);
-
-    res.json({ status }).end()
-})
-
-
-router.get('/get', (req, res) => {
-    res.send('List of all datapoints')
-})
-
-router.get('/get/:id', (req, res) => {
-    const id = req.params.id
-    res.send(`Datapoint with ID: ${id}`)
-})
-
 export default router;
