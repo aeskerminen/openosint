@@ -21,7 +21,7 @@ const storage = multer.memoryStorage({
 const multerUpload = multer({ storage: storage });
 
 const uploadDir = path.join(config.__dirname, '../uploads');
-const outputDir = path.join(config.__dirname, '/redis-worker/output');
+const outputDir = path.join(config.__dirname, '../output');
 
 router.post('/upload', multerUpload.single('file'), async (req, res) => {
     const datapoint = req.body
@@ -55,7 +55,7 @@ router.post('/upload', multerUpload.single('file'), async (req, res) => {
                     await redis.rpush('ml:jobs', jobData)
                     await redis.set(`status:${jobID}`, 'queued')
 
-                    res.status(201).send(`Datapoint created with ID: ${createdDatapoint._id}, Redis job created with Job ID: ${jobID}`).end()
+                    res.status(201).json({jobID}).end()
                 }
             })
 

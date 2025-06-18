@@ -24,7 +24,7 @@ while True:
 
             r.set(f'result:{job_id}', result, ex=300)
             r.set(f'status:{job_id}', 'done')
-            #r.publish('ml:results', job_id)
+            r.publish('ml:results', job_id)
 
         except Exception as e:
             r.set(f'status:{job_id}', 'error')
