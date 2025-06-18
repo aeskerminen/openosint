@@ -160,3 +160,4 @@ uploads/
 env/
 output/
 *.rdb
+*.sh
