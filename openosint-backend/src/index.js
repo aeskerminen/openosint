@@ -4,15 +4,13 @@ import morgan from 'morgan';
 import { createServer } from 'http';
 import datapointsRouter from './routes/datapoints.js';
 import config from './config.js';
-import { createClient } from 'redis';
 import { Server } from 'socket.io';
-
+import redis from './redisClient.js';
 
 const app = express();
 const httpServer = createServer(app);
 
 const socketIOserver = new Server(httpServer, { cors: { origin: '*' } });
-const redisSub = createClient({ socket: { host: 'localhost', port: config.REDIS_PORT } });
 
 app.use(express.json())
 app.use(morgan('dev'))
@@ -20,7 +18,6 @@ app.use(morgan('dev'))
 app.use(cors({
   origin: '*',
 }))
-
 
 socketIOserver.on('connection', (socket) => {
   console.log('Frontend connected to Socket.IO server');
@@ -32,11 +29,13 @@ socketIOserver.on('connection', (socket) => {
 });
 
 (async () => {
-  await redisSub.connect();
-  await redisSub.subscribe('ml:results', (message) => {
-    console.log(`Job ID: ${message} is done, notifying frontend...`);
+  redis.redisSub.on('message', (channel, message) => {
+    console.log(`Received message from channel ${channel}: ${message}`);
     socketIOserver.to(message).emit('done', { jobID: message });
   });
+
+  await redis.redisSub.subscribe('ml:results');
+  console.log('Subscribed to ml:results channel');
 })();
 
 app.use('/datapoints', datapointsRouter)

@@ -47,8 +47,8 @@ router.post('/upload', multerUpload.single('file'), async (req, res) => {
                         outputPath: outputPath,
                     })
 
-                    await redis.rpush('ml:jobs', jobData)
-                    await redis.set(`status:${jobID}`, 'queued')
+                    await redis.redisPub.rpush('ml:jobs', jobData)
+                    await redis.redisPub.set(`status:${jobID}`, 'queued')
 
                     res.status(201).json({jobID}).end()
                 }
