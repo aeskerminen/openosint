@@ -17,6 +17,8 @@ const storage = multer.memoryStorage({
 
 const multerUpload = multer({ storage: storage });
 
+const uploadDir = path.join(config.__dirname, '../uploads');
+
 router.post('/upload', multerUpload.single('file'), async (req, res) => {
     const datapoint = req.body
     datapoint.filename = (Date.now() + '-' + Math.round(Math.random() * 1E9)) + path.extname(req.file.originalname)
@@ -28,7 +30,7 @@ router.post('/upload', multerUpload.single('file'), async (req, res) => {
 
     datapointModel.create(datapoint)
         .then((createdDatapoint) => {
-            const filePath = path.join(config.__dirname, '../uploads', datapoint.filename)
+            const filePath = path.join(uploadDir, datapoint.filename)
 
             fs.writeFile(filePath, req.file.buffer, (err) => {
                 if (err) {
