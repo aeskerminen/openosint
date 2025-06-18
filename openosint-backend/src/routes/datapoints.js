@@ -14,8 +14,8 @@ const storage = multer.diskStorage({
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         cb(null, uniqueSuffix + path.extname(file.originalname));
     },
-    fileFilter: function(req,file,cb) {
-        if(file.mimetype === "image/png" || file.mimetype === "image/jpeg" || file.mimetype === "image/jpg") {
+    fileFilter: function (req, file, cb) {
+        if (file.mimetype === "image/png" || file.mimetype === "image/jpeg" || file.mimetype === "image/jpg") {
             cb(null, true);
         } else {
             cb(new Error('Only image types allowed.'), false);
@@ -25,7 +25,24 @@ const storage = multer.diskStorage({
 
 const multerUpload = multer({ storage: multer.memoryStorage });
 
-router.post('/upload', multerUpload.single('file'), (req, res) => {
+const asyncWrapper = fn => {
+    return (req, res, next) => {
+        return fn(req, res, next).catch(next);
+    }
+};
+
+router.post('/upload', multerUpload.single('file'), asyncWrapper(async (req, res, next) => {
+    const validationResult = await validateMIMEType(req.file.path, {
+        originalFilename: req.file.originalname,
+        allowMimeTypes: ['image/jpeg', 'image/png', 'image/jpg'],
+    });
+
+    console.log('validationResult', validationResult);
+    
+    if (!validationResult.ok) {
+        return res.send(400);
+    }
+
     const datapoint = req.body
     datapoint.filename = req.file.filename
 
@@ -46,7 +63,8 @@ router.post('/upload', multerUpload.single('file'), (req, res) => {
             console.error('Error creating datapoint:', err)
             res.status(500).send('Error creating datapoint').end()
         })
-})
+}))
+
 
 router.get('/get', (req, res) => {
     res.send('List of all datapoints')
