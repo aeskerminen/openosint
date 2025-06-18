@@ -2,11 +2,13 @@ const express = require('express')
 const path = require('path')
 const router = express.Router()
 
+const fs = require('fs')
+
 const datapointModel = require('../models/Datapoint')
 
 const multer = require('multer')
 
-const storage = multer.diskStorage({
+const storage = multer.memoryStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/');
     },
@@ -16,7 +18,7 @@ const storage = multer.diskStorage({
     },
 });
 
-const multerUpload = multer({ storage: multer.memoryStorage() });
+const multerUpload = multer({ storage: storage });
 
 const asyncWrapper = fn => {
     return (req, res, next) => {
@@ -25,23 +27,17 @@ const asyncWrapper = fn => {
 };
 
 router.post('/upload', multerUpload.single('file'), asyncWrapper(async (req, res, next) => {
-    const validationResult = await validateMIMEType(req.file.path, {
-        originalFilename: req.file.originalname,
-        allowMimeTypes: ['image/jpeg', 'image/png', 'image/jpg'],
-    });
-
-    console.log('validationResult', validationResult);
-
-    if (!validationResult.ok) {
-        return res.send(400);
-    }
-
     const datapoint = req.body
-    datapoint.filename = req.file.filename
+    datapoint.filename = (Date.now() + '-' + Math.round(Math.random() * 1E9)) + path.extname(req.file.originalname)
 
     datapointModel.create(datapoint)
         .then((createdDatapoint) => {
-            const filePath = path.join(__dirname, '../../uploads', req.file.filename)
+            const filePath = path.join(__dirname, '../../uploads', datapoint.filename)
+
+            // ENSURE THAT THE FILE IS AN IMAGE (WIP)
+
+
+
             fs.writeFile(filePath, req.file.buffer, (err) => {
                 if (err) {
                     console.error('Error saving file:', err)
