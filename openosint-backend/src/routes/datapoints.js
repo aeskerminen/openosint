@@ -5,6 +5,8 @@ import { fileTypeFromBuffer } from 'file-type';
 import multer from 'multer';
 import datapointModel from '../models/Datapoint.js';
 
+import config from '../config.js';
+
 const router = express.Router();
 
 const storage = multer.memoryStorage({
@@ -26,7 +28,7 @@ router.post('/upload', multerUpload.single('file'), async (req, res) => {
 
     datapointModel.create(datapoint)
         .then((createdDatapoint) => {
-            const filePath = path.join(__dirname, '../../uploads', datapoint.filename)
+            const filePath = path.join(config.__dirname, '../uploads', datapoint.filename)
 
             fs.writeFile(filePath, req.file.buffer, (err) => {
                 if (err) {
