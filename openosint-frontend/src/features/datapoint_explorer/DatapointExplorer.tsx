@@ -48,19 +48,25 @@ const DatapointExplorer = () => {
             <p className="text-2xl font-bold mb-4">Datapoint Explorer</p>
 
             {/* Form for uploading a picture (datapoint)*/}
-            <div className="flex-1">
+            <div className="flex-1 flex flex-col gap-2">
                 <form className="flex flex-row items-center gap-2 bg-[#101010] p-4">
                     <input type="file" accept="image/*" className="bg-[#1a1a1a] text-white px-4 py-2 rounded" ref={fileInputRef} onChange={(e) => { setSelectedFile(e.currentTarget.files ? e.currentTarget.files[0] : null) }} />
                     <button type="submit" className=" text-white px-4 py-2 rounded" onClick={handleSubmit} >
                         Upload Datapoint
                     </button>
                 </form>
+                <div className="bg-[#1a1a1a] p-4 rounded">Status: {status}</div>
             </div>
 
-            <div>Status: {status}</div>
 
             {/* List of all datapoints fetched from the backend */}
-            <div className="flex-1">Datapoints</div>
+            <div className="flex-1">
+                <p className="text-xl font-bold mb-4">Datapoints</p>
+                <div className="bg-[#1a1a1a] p-4 rounded">
+                    <p className="text-white">This section will display all uploaded datapoints.</p>
+                    {/* Here you can implement a component to list all datapoints */}
+                </div>
+            </div>
 
         </div>
     )
