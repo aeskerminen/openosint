@@ -40,6 +40,7 @@ const DatapointExplorer = () => {
 
     useJobStatus(jobID, () => {
         setStatus("done")
+        setJobID("");
     })
 
     return (
