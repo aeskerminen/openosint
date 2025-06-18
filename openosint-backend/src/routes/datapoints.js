@@ -14,16 +14,9 @@ const storage = multer.diskStorage({
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         cb(null, uniqueSuffix + path.extname(file.originalname));
     },
-    fileFilter: function (req, file, cb) {
-        if (file.mimetype === "image/png" || file.mimetype === "image/jpeg" || file.mimetype === "image/jpg") {
-            cb(null, true);
-        } else {
-            cb(new Error('Only image types allowed.'), false);
-        }
-    }
 });
 
-const multerUpload = multer({ storage: multer.memoryStorage });
+const multerUpload = multer({ storage: multer.memoryStorage() });
 
 const asyncWrapper = fn => {
     return (req, res, next) => {
@@ -38,7 +31,7 @@ router.post('/upload', multerUpload.single('file'), asyncWrapper(async (req, res
     });
 
     console.log('validationResult', validationResult);
-    
+
     if (!validationResult.ok) {
         return res.send(400);
     }
