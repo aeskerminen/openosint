@@ -1,3 +1,4 @@
+import db from '../mongodb.js';
 import mongoose from 'mongoose';
 
 const datapointSchema = new mongoose.Schema({
