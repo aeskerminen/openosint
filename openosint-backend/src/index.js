@@ -6,7 +6,6 @@ import config from './config.js';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { createClient } from 'redis'
-import config from './config.js';
 
 const app = express()
 
