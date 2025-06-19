@@ -1,33 +1,24 @@
 import sys
-import time
-import json
-import os
+import numpy as np
+from PIL import Image
 
-def dummy_inference(image_path):
-    time.sleep(2)
-
-    result = {
-        "input_file": os.path.basename(image_path),
-        "status": "processed",
-        "detections": [
-            {"label": "cat", "confidence": 0.87},
-            {"label": "dog", "confidence": 0.76}
-        ],
-        "timestamp": time.time()
-    }
-    return result
-
-if __name__ == "__main__":
+def dummy_inference():
+    img_array = np.random.randint(0, 256, (256, 256, 3), dtype=np.uint8)
+    return Image.fromarray(img_array, 'RGB')
+   
+def main():
     if len(sys.argv) != 3:
-        print("Usage: python inference.py [input_image_path] [output_json_path]")
+        print("Usage: python dummy_inference.py <input_path> <output_path>")
         sys.exit(1)
 
     input_path = sys.argv[1]
     output_path = sys.argv[2]
 
-    result = dummy_inference(input_path)
+    img = dummy_inference()
+    img.save(output_path)
+    
+    print(f"Random image saved to {output_path}")
 
-    with open(output_path, 'w') as f:
-        json.dump(result, f)
 
-    print(f"Inference complete. Results written to {output_path}")
+if __name__ == "__main__":
+    main()

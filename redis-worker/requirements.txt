@@ -1,2 +1,4 @@
 # requirements.txt for redis-worker
 redis
+numpy
+Pillow

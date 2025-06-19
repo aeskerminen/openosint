@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { Datapoint } from "../types/datapoint";
 import axios from "axios";
 import { config } from "../config";
+import type { RootState } from "../store";
 
 interface datapointState {
   value: Array<Datapoint>;
@@ -15,6 +16,8 @@ export const fetchDatapoints = createAsyncThunk(
     const res = await axios.get<Datapoint[]>(
       config.API_BASE_URL + "/" + "datapoints"
     );
+
+    console.log(res.data)
     return res.data;
   }
 );
@@ -45,7 +48,6 @@ export const datapointSlice = createSlice({
       })
       .addCase(fetchDatapoints.fulfilled, (state, action) => {
         state.status = "succeeded";
-        // Add any fetched posts to the array
         state.value.push(...action.payload);
       })
       .addCase(fetchDatapoints.rejected, (state, action) => {
@@ -58,3 +60,7 @@ export const datapointSlice = createSlice({
 export const { add, remove } = datapointSlice.actions;
 
 export default datapointSlice.reducer;
+
+export const selectAllDatapoints = (state : RootState) => state.datapoints.value;
+
+export const selectDatapointsStatus = (state: RootState) => state.datapoints.status;
