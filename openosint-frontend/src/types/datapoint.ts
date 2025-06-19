@@ -1,5 +1,6 @@
 export type Datapoint = {
   id: string;
-  value: string;
+  name: string;
+  filename: string;
   timestamp: Date;
 };

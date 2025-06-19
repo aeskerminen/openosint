@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import datapointService from "../datapoint_explorer/services/datapointService"
 import { useJobStatus } from "./hooks/useJobStatus";
 import { useDispatch, useSelector } from "react-redux";
-import { add, remove } from "../../slices/datapointSlice";
+import { add, fetchDatapoints, remove } from "../../slices/datapointSlice";
 import type { Datapoint } from "../../types/datapoint";
 
 const DatapointExplorer = () => {
@@ -48,6 +48,10 @@ const DatapointExplorer = () => {
         setStatus("done")
         setJobID("");
     })
+
+    useEffect(() => {
+        dispatch(fetchDatapoints())
+    }, [])
 
     return (
         <div className="flex flex-row w-screen h-screen items-center justify-center flex-1 gap-4 p-4">
