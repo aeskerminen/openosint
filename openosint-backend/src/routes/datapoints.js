@@ -77,4 +77,17 @@ router.get('/:amount&:offset', (req, res) => {
         });
 })
 
+
+router.get('/', (req, res) => {
+    datapointModel.find({})
+        .then((datapoints) => {
+            res.status(200).json(datapoints).end();
+        })
+        .catch((err) => {
+            console.error('Error fetching datapoints:', err);
+            res.status(500).send('Error fetching datapoints').end();
+        });
+})
+
+
 export default router;
