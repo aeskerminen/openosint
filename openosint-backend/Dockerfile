@@ -1,6 +1,13 @@
 FROM node:20-alpine
+
 WORKDIR /app
+
 COPY . .
+
 RUN npm install
-CMD ["node", "src/index.js"]
-EXPOSE 5000
+
+RUN npm install -g nodemon
+
+CMD ["nodemon", "src/index.js"]
+
+EXPOSE 3003

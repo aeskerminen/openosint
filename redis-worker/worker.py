@@ -3,11 +3,15 @@ import json
 import subprocess
 import time
 
-r = redis.Redis(host='localhost', port=3004, decode_responses=True)
+print("Starting Redis worker...")
+
+r = redis.Redis(host='redis', port=3004, decode_responses=True)
 
 while True:
     job_data = r.blpop('ml:jobs', timeout=5)
+    print("Waiting for job data...")
     if job_data:
+        print(f"Received job data: {job_data}")
         _, raw_job = job_data
         job = json.loads(raw_job)
 
@@ -17,7 +21,7 @@ while True:
 
         try:
             r.set(f'status:{job_id}', 'processing')
-            subprocess.run(['./run_inference.sh', input_path, output_path], check=True)
+            subprocess.run(['python', 'dummy_inference.py', input_path, output_path], check=True)
 
             #with open(output_path, 'r') as f:
             #    result = f.read()
@@ -29,3 +33,5 @@ while True:
         except Exception as e:
             r.set(f'status:{job_id}', 'error')
             r.set(f'result:{job_id}', str(e), ex=300)
+
+        print(f"Job {job_id} processed successfully.")    

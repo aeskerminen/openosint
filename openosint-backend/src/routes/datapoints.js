@@ -15,8 +15,15 @@ const storage = multer.memoryStorage();
 
 const multerUpload = multer({ storage: storage });
 
-const uploadDir = path.join(config.__dirname, '../uploads');
-const outputDir = path.join(config.__dirname, '../output');
+const uploadDir = '/data/uploads';
+const outputDir = '/data/output';
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+if (!fs.existsSync(outputDir)) {
+  fs.mkdirSync(outputDir, { recursive: true });
+}
 
 router.post('/upload', multerUpload.single('file'), async (req, res) => {
     const datapoint = req.body

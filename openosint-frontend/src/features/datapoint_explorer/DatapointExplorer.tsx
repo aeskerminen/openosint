@@ -50,7 +50,7 @@ const DatapointExplorer = () => {
     })
 
     useEffect(() => {
-        dispatch(fetchDatapoints())
+   //     dispatch(fetchDatapoints())
     }, [])
 
     return (
