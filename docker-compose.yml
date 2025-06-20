@@ -19,6 +19,11 @@ services:
       - "5173:5173"
     depends_on:
       - backend
+    volumes:
+      - ./openosint-frontend:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
 
   backend:
     build: ./openosint-backend
@@ -28,7 +33,11 @@ services:
       - mongodb
       - redis
     volumes:
+      - ./openosint-backend:/app
+      - /app/node_modules
       - data-volume:/data
+    environment:
+      - CHOKIDAR_USEPOLLING=true
 
   redis-worker:
     build: ./redis-worker

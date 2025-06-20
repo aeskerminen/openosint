@@ -4,8 +4,7 @@ WORKDIR /worker
 
 COPY . .
 
-RUN apk add  build-base && \
-    pip install --upgrade pip && \
+RUN pip install --upgrade pip && \
     pip install -r requirements.txt
 
 CMD ["python", "-u", "worker.py"]
