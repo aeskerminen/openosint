@@ -12,6 +12,8 @@ import {
 import type { Datapoint } from "../../types/datapoint";
 import type { AppDispatch } from "../../store";
 import { useAppDispatch, useAppSelector } from "../../reduxHooks";
+import { config } from "../../config";
+
 
 const DatapointExplorer = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -101,7 +103,10 @@ const DatapointExplorer = () => {
             This section will display all uploaded datapoints.
           </p>
           {datapoints.map((datapoint: Datapoint) => {
-            return <div>this is a datapoint: {datapoint.filename}</div>;
+            return <div>
+              <h1>this is a datapoint: {datapoint.filename}</h1>
+              <img src={`${config.API_BASE_URL}/images/${datapoint._id}.png`}></img>
+            </div>;
           })}
         </div>
       </div>

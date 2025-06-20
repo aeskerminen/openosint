@@ -12,12 +12,12 @@ def main():
         sys.exit(1)
 
     input_path = sys.argv[1]
-    output_path = sys.argv[2]
+    fileID = sys.argv[2]
 
     img = dummy_inference()
-    img.save(output_path)
-    
-    print(f"Random image saved to {output_path}")
+    img.save(f"/data/output/{fileID}.png")
+
+    print(f"Random image saved to /data/output/{fileID}.png")
 
 
 if __name__ == "__main__":

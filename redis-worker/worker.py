@@ -17,7 +17,7 @@ while True:
 
         job_id = job['jobID']
         input_path = job['inputPath']
-        output_path = job['outputPath']
+        output_path = job['fileID']
 
         try:
             r.set(f'status:{job_id}', 'processing')

@@ -6,6 +6,7 @@ import datapointsRouter from "./routes/datapoints.js";
 import config from "./config.js";
 import { Server } from "socket.io";
 import redis from "./redisClient.js";
+import path from "path";
 
 const app = express();
 const httpServer = createServer(app);
@@ -20,6 +21,8 @@ app.use(
     origin: "*",
   })
 );
+
+app.use('/images', express.static(path.join(config.__dirname, '../../data/output')));
 
 socketIOserver.on("connection", (socket) => {
   console.log("Frontend connected to Socket.IO server");

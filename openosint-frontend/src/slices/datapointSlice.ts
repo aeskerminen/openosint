@@ -37,7 +37,7 @@ export const datapointSlice = createSlice({
     },
     remove: (state, action) => {
       state.value = state.value.filter(
-        (datapoint) => datapoint.id !== action.payload.id
+        (datapoint) => datapoint._id !== action.payload._id
       );
     },
   },
