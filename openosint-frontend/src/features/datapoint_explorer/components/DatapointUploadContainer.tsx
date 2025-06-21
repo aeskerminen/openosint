@@ -41,8 +41,8 @@ const DatapointUploadContainer: React.FC<
   });
 
   return (
-    <div className="flex-1 flex flex-col gap-2">
-      <p className="text-2xl font-bold mb-4">Datapoint Explorer</p>
+    <div className="flex flex-col gap-2">
+      <p className="text-2xl font-bold">Datapoint Explorer</p>
       <form className="flex flex-row items-center gap-2 bg-[#101010] p-4">
         <input
           type="file"
