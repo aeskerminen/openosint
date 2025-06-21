@@ -1,7 +1,6 @@
 import { config } from "../../../config";
 import React, { useEffect } from "react";
 import {
-  datapointSlice,
   fetchDatapoints,
   selectAllDatapoints,
   selectDatapointsStatus,
