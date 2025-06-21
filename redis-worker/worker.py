@@ -17,21 +17,16 @@ while True:
 
         job_id = job['jobID']
         input_path = job['inputPath']
-        output_path = job['fileID']
+        datapoint = job['datapoint']
+        filename = datapoint['filename']
 
         try:
             r.set(f'status:{job_id}', 'processing')
-            subprocess.run(['python', 'dummy_inference.py', input_path, output_path], check=True)
-
-            #with open(output_path, 'r') as f:
-            #    result = f.read()
-
-            #r.set(f'result:{job_id}', result, ex=300)
+            subprocess.run(['python', 'dummy_inference.py', input_path, filename], check=True)
             r.set(f'status:{job_id}', 'done')
             r.publish('ml:results', job_id)
-
         except Exception as e:
             r.set(f'status:{job_id}', 'error')
             r.set(f'result:{job_id}', str(e), ex=300)
 
-        print(f"Job {job_id} processed successfully.")    
+        print(f"Job {job_id} processed successfully.")

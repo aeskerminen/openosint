@@ -54,8 +54,14 @@ router.post("/upload", multerUpload.single("file"), async (req, res) => {
           const jobData = JSON.stringify({
             jobID: jobID,
             inputPath: inputPath,
-            fileID: createdDatapoint._id.toString(),
-          });
+            datapoint: {
+              _id: createdDatapoint._id.toString(),
+              name: createdDatapoint.name,
+              filename: createdDatapoint.filename,
+              createdAt: createdDatapoint.createdAt,
+              updatedAt: createdDatapoint.updatedAt,
+            },
+          }); 
 
           await redis.redisPub.rpush("ml:jobs", jobData);
           await redis.redisPub.set(`status:${jobID}`, "queued");
