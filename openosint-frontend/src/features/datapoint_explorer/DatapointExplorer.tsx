@@ -54,6 +54,9 @@ const DatapointExplorer = () => {
 
   const [jobID, setJobID] = useState<string>("");
   const [status, setStatus] = useState<string>("idle");
+  const [selectedDatapoint, setSelectedDatapoint] = useState<Datapoint | null>(
+    null
+  );
 
   useJobStatus(jobID, () => {
     setStatus("done");
@@ -101,19 +104,62 @@ const DatapointExplorer = () => {
           <h2 className="text-white mb-2">
             This section will display all uploaded datapoints.
           </h2>
-          {datapoints.map((datapoint: Datapoint) => {
-            return (
+          <div className="flex flex-col gap-2">
+            {datapoints.map((datapoint: Datapoint) => {
+              const date = new Date(datapoint.createdAt);
+              return (
+                <div
+                  key={datapoint._id}
+                  className={`flex items-center gap-4 p-2 bg-[#232323] rounded cursor-pointer hover:bg-[#333] transition-all`}
+                  onClick={() => setSelectedDatapoint(datapoint)}
+                >
+                  <img
+                    src={`${config.API_BASE_URL}/images/${datapoint.filename}`}
+                    alt={datapoint.name}
+                    className="w-12 h-12 object-cover rounded border border-[#444]"
+                  />
+                  <div className="flex flex-col flex-1">
+                    <span className="text-white font-semibold">
+                      {datapoint.name}
+                    </span>
+                    <span className="text-xs text-gray-400">
+                      {date.toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {selectedDatapoint && (
+            <div
+              className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 h-full w-full"
+              onClick={() => setSelectedDatapoint(null)}
+            >
               <div
-                key={datapoint._id}
-                className="mb-4 p-2   bg-[#2a2a2a] rounded"
+                className="bg-[#181818] p-6 rounded shadow-lg relative"
+                onClick={(e) => e.stopPropagation()}
               >
-                <h1>this is a datapoint: {datapoint.filename}</h1>
                 <img
-                  src={`${config.API_BASE_URL}/images/${datapoint.filename}`}
-                ></img>
+                  src={`${config.API_BASE_URL}/images/${selectedDatapoint.filename}`}
+                  alt={selectedDatapoint.name}
+                  className="rounded mb-4"
+                  style={{width:'25vw', height: 'auto'}}
+                />
+                <div className="text-white text-lg font-bold mb-2">
+                  {selectedDatapoint.name}
+                </div>
+                <div className="text-gray-400 text-sm mb-2">
+                  {new Date(selectedDatapoint.createdAt).toLocaleString()}
+                </div>
+                <button
+                  className="absolute top-2 right-2 text-white text-2xl"
+                  onClick={() => setSelectedDatapoint(null)}
+                >
+                  &times;
+                </button>
               </div>
-            );
-          })}
+            </div>
+          )}
         </div>
       </div>
     </div>
