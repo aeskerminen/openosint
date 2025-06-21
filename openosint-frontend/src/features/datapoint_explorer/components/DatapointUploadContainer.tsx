@@ -21,7 +21,7 @@ const DatapointUploadContainer: React.FC<
     }
     const formData = new FormData();
     formData.append("file", selectedFile);
-    formData.append("name", selectedFile.name);
+    formData.append("name", "unnamed");
     datapointService
       .uploadDatapoint(formData)
       .then((response) => {

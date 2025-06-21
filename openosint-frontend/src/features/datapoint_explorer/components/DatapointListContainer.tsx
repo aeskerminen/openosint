@@ -53,7 +53,7 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
                   className="w-12 h-12 object-cover rounded border border-[#444]"
                 />
                 <div className="flex flex-col flex-1">
-                  <span className="text-white font-semibold">{datapoint._id}</span>
+                  <span className="text-white font-semibold">{datapoint.name}</span>
                   <span className="text-xs text-gray-400">
                     {date.toLocaleString()}
                   </span>

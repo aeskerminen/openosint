@@ -21,7 +21,7 @@ const DatapointViewerContainer = ({ datapoint }: DatapointViewerContainerProps) 
         className="rounded mb-4 max-h-[60vh] max-w-[40vw]"
         style={{ objectFit: "contain" }}
       />
-      <div className="text-white text-lg font-bold mb-2">{datapoint._id}</div>
+      <div className="text-white text-lg font-bold mb-2">{datapoint.name}</div>
       <div className="text-gray-400 text-sm mb-2">{new Date(datapoint.createdAt).toLocaleString()}</div>
     </div>
   );
