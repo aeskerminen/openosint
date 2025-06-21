@@ -1,5 +1,5 @@
 import { config } from "../../../config";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   fetchDatapoints,
   selectAllDatapoints,
@@ -8,26 +8,24 @@ import {
 import type { Datapoint } from "../../../types/datapoint";
 import { useAppDispatch, useAppSelector } from "../../../reduxHooks";
 
-interface DatapointListContainerProps {}
+interface DatapointListContainerProps {
+  onSelect: (datapoint: Datapoint) => void;
+  selectedDatapoint: Datapoint | null;
+}
 
-const DatapointListContainer: React.FC<DatapointListContainerProps> = ({}) => {
+const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
+  onSelect,
+  selectedDatapoint,
+}) => {
   const dispatch = useAppDispatch();
   const datapoints = useAppSelector(selectAllDatapoints);
   const datapointsStatus = useAppSelector(selectDatapointsStatus);
-
-  const [selectedDatapoint, setSelectedDatapoint] = useState<Datapoint | null>(
-    null
-  );
 
   useEffect(() => {
     if (datapointsStatus === "idle") {
       dispatch(fetchDatapoints());
     }
   }, [dispatch, datapointsStatus]);
-
-  const onCloseModal = () => {
-    setSelectedDatapoint(null);
-  };
 
   return (
     <div className="flex-1">
@@ -42,8 +40,12 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({}) => {
             return (
               <div
                 key={datapoint._id}
-                className={`flex items-center gap-4 p-2 bg-[#232323] rounded cursor-pointer hover:bg-[#333] transition-all`}
-                onClick={() => setSelectedDatapoint(datapoint)}
+                className={`flex items-center gap-4 p-2 bg-[#232323] rounded cursor-pointer hover:bg-[#333] transition-all ${
+                  selectedDatapoint && selectedDatapoint._id === datapoint._id
+                    ? "ring-2 ring-blue-500"
+                    : ""
+                }`}
+                onClick={() => onSelect(datapoint)}
               >
                 <img
                   src={`${config.API_BASE_URL}/images/${datapoint.filename}`}
@@ -51,9 +53,7 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({}) => {
                   className="w-12 h-12 object-cover rounded border border-[#444]"
                 />
                 <div className="flex flex-col flex-1">
-                  <span className="text-white font-semibold">
-                    {datapoint._id}
-                  </span>
+                  <span className="text-white font-semibold">{datapoint.name}</span>
                   <span className="text-xs text-gray-400">
                     {date.toLocaleString()}
                   </span>
@@ -62,36 +62,6 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({}) => {
             );
           })}
         </div>
-        {selectedDatapoint && (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 h-full w-full"
-            onClick={onCloseModal}
-          >
-            <div
-              className="bg-[#181818] p-6 rounded shadow-lg relative"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <img
-                src={`${config.API_BASE_URL}/images/${selectedDatapoint.filename}`}
-                alt={selectedDatapoint.name}
-                className="rounded mb-4"
-                style={{ width: "25vw", height: "auto" }}
-              />
-              <div className="text-white text-lg font-bold mb-2">
-                {selectedDatapoint._id}
-              </div>
-              <div className="text-gray-400 text-sm mb-2">
-                {new Date(selectedDatapoint.createdAt).toLocaleString()}
-              </div>
-              <button
-                className="absolute top-2 right-2 text-white text-2xl"
-                onClick={onCloseModal}
-              >
-                &times;
-              </button>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
