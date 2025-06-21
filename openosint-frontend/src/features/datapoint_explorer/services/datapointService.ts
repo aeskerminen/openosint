@@ -12,8 +12,14 @@ const uploadDatapoint = async (datapoint : FormData) => {
     return req;
 };
 
+const removeDatapoint = async (datapointId: string) => {
+    const req = axios.delete(`${config.API_BASE_URL}/datapoints/${datapointId}`);
+    return req;
+}
+
 const datapointService = {
-    uploadDatapoint
+    uploadDatapoint,
+    removeDatapoint
 };
 
 export default datapointService;

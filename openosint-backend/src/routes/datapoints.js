@@ -61,7 +61,7 @@ router.post("/upload", multerUpload.single("file"), async (req, res) => {
               createdAt: createdDatapoint.createdAt,
               updatedAt: createdDatapoint.updatedAt,
             },
-          }); 
+          });
 
           await redis.redisPub.rpush("ml:jobs", jobData);
           await redis.redisPub.set(`status:${jobID}`, "queued");
@@ -103,6 +103,24 @@ router.get("/", (req, res) => {
       console.error("Error fetching datapoints:", err);
       res.status(500).send("Error fetching datapoints").end();
     });
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const datapoint = await datapointModel.findByIdAndDelete(req.params.id);
+    if (!datapoint) {
+      return res.status(404).json({ error: "Datapoint not found" });
+    }
+    // Optionally, delete the associated image file
+    const filePath = path.join(outputDir, datapoint.filename);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+    res.status(200).json({ message: "Datapoint deleted" });
+  } catch (err) {
+    console.error("Error deleting datapoint:", err);
+    res.status(500).json({ error: "Error deleting datapoint" });
+  }
 });
 
 export default router;

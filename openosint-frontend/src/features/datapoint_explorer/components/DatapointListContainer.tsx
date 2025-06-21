@@ -1,12 +1,16 @@
 import { config } from "../../../config";
 import React, { useEffect } from "react";
 import {
+  datapointSlice,
   fetchDatapoints,
   selectAllDatapoints,
   selectDatapointsStatus,
 } from "../../../slices/datapointSlice";
 import type { Datapoint } from "../../../types/datapoint";
 import { useAppDispatch, useAppSelector } from "../../../reduxHooks";
+import datapointService from "../services/datapointService";
+
+import { remove } from "../../../slices/datapointSlice";
 
 interface DatapointListContainerProps {
   onSelect: (datapoint: Datapoint) => void;
@@ -27,7 +31,18 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
     }
   }, [dispatch, datapointsStatus]);
 
-  const handleRemoveDatapoint = (datapoint: Datapoint) => {};
+  const handleRemoveDatapoint = (datapoint: Datapoint) => {
+    datapointService
+      .removeDatapoint(datapoint._id)
+      .then((result) => {
+        dispatch(remove(datapoint))
+        console.log("Datapoint removed:", result);
+      })
+      .catch((error) => {
+        console.error("Failed to remove datapoint:", error);
+        alert("Failed to remove datapoint. Please try again.");
+      });
+  };
 
   return (
     <div className="flex-1">
@@ -68,7 +83,9 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
                     e.stopPropagation();
                     handleRemoveDatapoint(datapoint);
                   }}
-                >X</button>
+                >
+                  X
+                </button>
               </div>
             );
           })}
