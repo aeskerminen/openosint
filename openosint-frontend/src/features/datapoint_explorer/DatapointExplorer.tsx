@@ -4,8 +4,10 @@ import DatapointListContainer from "./components/DatapointListContainer";
 const DatapointExplorer = () => {
   return (
     <div className="flex flex-row w-screen h-screen items-center justify-center flex-1 gap-4 p-4">
+      <div className="flex flex-col gap-4 flex-1 max-w-5xl">
       <DatapointUploadContainer />
       <DatapointListContainer />
+      </div>
     </div>
   );
 };
