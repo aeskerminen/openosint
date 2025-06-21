@@ -27,6 +27,8 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
     }
   }, [dispatch, datapointsStatus]);
 
+  const handleRemoveDatapoint = (datapoint: Datapoint) => {};
+
   return (
     <div className="flex-1">
       <p className="text-xl font-bold mb-4">Datapoints</p>
@@ -53,11 +55,20 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
                   className="w-12 h-12 object-cover rounded border border-[#444]"
                 />
                 <div className="flex flex-col flex-1">
-                  <span className="text-white font-semibold">{datapoint.name}</span>
+                  <span className="text-white font-semibold">
+                    {datapoint.name}
+                  </span>
                   <span className="text-xs text-gray-400">
                     {date.toLocaleString()}
                   </span>
                 </div>
+                <button
+                  className="text-red-500 hover:text-red-700 transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveDatapoint(datapoint);
+                  }}
+                >X</button>
               </div>
             );
           })}
