@@ -1,6 +1,6 @@
 import axios from "axios";
-import { config } from "../../../config";
-import type { Datapoint } from "../../../types/datapoint";
+import { config } from "../config";
+import type { Datapoint } from "../types/datapoint";
 
 const uploadDatapoint = async (datapoint: FormData) => {
   const req = axios.post(
