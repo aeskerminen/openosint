@@ -35,6 +35,17 @@ export const datapointSlice = createSlice({
     add: (state, action) => {
       state.value.push(action.payload);
     },
+    update: (state, action) => {
+      const index = state.value.findIndex(
+        (datapoint) => datapoint._id === action.payload._id
+      );
+      if (index !== -1) {
+        state.value[index] = {
+          ...state.value[index],
+          ...action.payload,
+        };
+      }
+    },
     remove: (state, action) => {
       state.value = state.value.filter(
         (datapoint) => datapoint._id !== action.payload._id
@@ -57,7 +68,7 @@ export const datapointSlice = createSlice({
   },
 });
 
-export const { add, remove } = datapointSlice.actions;
+export const { add, update, remove } = datapointSlice.actions;
 
 export default datapointSlice.reducer;
 

@@ -16,7 +16,7 @@ const DatapointExplorer = () => {
           selectedDatapoint={selectedDatapoint}
         />
       </div>
-      <DatapointViewerContainer datapoint={selectedDatapoint} />
+      <DatapointViewerContainer datapointId={selectedDatapoint?._id} />
     </div>
   );
 };
