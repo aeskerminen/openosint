@@ -123,4 +123,23 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+router.put("/:id", async (req, res) => {
+  try {
+    const updatedDatapoint = await datapointModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    if (!updatedDatapoint) {
+      return res.status(404).json({ error: "Datapoint not found" });
+    }
+    
+    res.status(200).json(updatedDatapoint);
+  } catch (err) {
+    console.error("Error updating datapoint:", err);
+    res.status(500).json({ error: "Error updating datapoint" });
+  }
+});
+
 export default router;
