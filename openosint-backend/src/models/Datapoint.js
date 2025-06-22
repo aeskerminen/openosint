@@ -10,6 +10,14 @@ const datapointSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    description: {
+        type: String,
+        default: ''
+    },
+    eventTime: {
+        type: Date,
+        default: Date.now
+    },
     
 },{timestamps: true, _id: true})
 
