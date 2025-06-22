@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import datapointService from "../services/datapointService";
+import datapointService from "../../../services/datapointService";
 import { useJobStatus } from "../hooks/useJobStatus";
 
 interface DatapointUploadContainerProps {}

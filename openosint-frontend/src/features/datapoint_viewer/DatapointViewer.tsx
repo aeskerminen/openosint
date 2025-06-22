@@ -1,11 +1,11 @@
-import type { Datapoint } from "../../../types/datapoint";
-import { config } from "../../../config";
+import type { Datapoint } from "../../types/datapoint";
+import { config } from "../../config";
 import React, { useState } from "react";
-import datapointService from "../services/datapointService";
-import { useAppDispatch, useAppSelector } from "../../../reduxHooks";
-import { update } from "../../../slices/datapointSlice";
+import datapointService from "../../services/datapointService";
+import { useAppDispatch, useAppSelector } from "../../reduxHooks";
+import { update } from "../../slices/datapointSlice";
 
-interface DatapointViewerContainerProps {
+interface DatapointViewerProps {
   datapointId: string | undefined;
   onUpdate?: (updated: Datapoint) => void;
 }
@@ -66,10 +66,10 @@ const DatapointEditor: React.FC<{
   </>
 );
 
-const DatapointViewerContainer = ({
+const DatapointViewer = ({
   datapointId,
   onUpdate,
-}: DatapointViewerContainerProps) => {
+}: DatapointViewerProps) => {
   const datapoint = useAppSelector((state) =>
     state.datapoints.value.find((dp: Datapoint) => dp._id === datapointId)
   );
@@ -184,4 +184,4 @@ const DatapointViewerContainer = ({
   );
 };
 
-export default DatapointViewerContainer;
+export default DatapointViewer;

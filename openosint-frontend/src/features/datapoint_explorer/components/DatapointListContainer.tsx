@@ -7,8 +7,7 @@ import {
 } from "../../../slices/datapointSlice";
 import type { Datapoint } from "../../../types/datapoint";
 import { useAppDispatch, useAppSelector } from "../../../reduxHooks";
-import datapointService from "../services/datapointService";
-
+import datapointService from "../../../services/datapointService";
 import { remove } from "../../../slices/datapointSlice";
 
 interface DatapointListContainerProps {
