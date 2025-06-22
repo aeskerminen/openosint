@@ -5,7 +5,9 @@ interface DatapointViewerContainerProps {
   datapoint: Datapoint | null;
 }
 
-const DatapointViewerContainer = ({ datapoint }: DatapointViewerContainerProps) => {
+const DatapointViewerContainer = ({
+  datapoint,
+}: DatapointViewerContainerProps) => {
   if (!datapoint) {
     return (
       <div className="flex-1 flex-col h-full bg-[#101010] p-4 rounded flex items-center justify-center text-gray-400">
@@ -23,9 +25,24 @@ const DatapointViewerContainer = ({ datapoint }: DatapointViewerContainerProps) 
           style={{ flex: 1 }}
         />
       </div>
-      <div className="w-full bg-[#181818] p-4 rounded-b flex flex-col items-start border-t border-[#222]" style={{ minHeight: '80px' }}>
+      <div
+        className="w-full bg-[#181818] p-4 rounded-b flex flex-col items-start border-t border-[#222]"
+        style={{ minHeight: "100px" }}
+      >
         <div className="text-white text-lg font-bold">{datapoint.name}</div>
-        <div className="text-gray-400 text-sm">{new Date(datapoint.createdAt).toLocaleString()}</div>
+        <div className="text-gray-400 text-sm mb-1">
+          Event Time:{" "}
+          {datapoint.eventTime
+            ? new Date(datapoint.eventTime).toLocaleString()
+            : "N/A"}
+        </div>
+        <div className="text-gray-300 text-sm mb-1">
+          Description: {datapoint.description || "No description"}
+        </div>
+        <div className="w-full border-t border-[#222] my-2"></div>
+        <div className="text-gray-400 text-sm mb-1">
+          Created: {new Date(datapoint.createdAt).toLocaleString()}
+        </div>
         <div className="text-gray-500 text-xs mt-1">ID: {datapoint._id}</div>
       </div>
     </div>
