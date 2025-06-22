@@ -1,25 +1,32 @@
-import db from '../mongodb.js';
-import mongoose from 'mongoose';
+import db from "../mongodb.js";
+import mongoose from "mongoose";
+import { pointSchema } from "./Point.js";
 
-const datapointSchema = new mongoose.Schema({
+const datapointSchema = new mongoose.Schema(
+  {
     name: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     filename: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     description: {
-        type: String,
-        default: ''
+      type: String,
+      default: "",
     },
     eventTime: {
-        type: Date,
-        default: Date.now
+      type: Date,
+      default: Date.now,
     },
-    
-},{timestamps: true, _id: true})
+    GPSlocation: {
+      type: pointSchema,
+      required: false,
+    },
+  },
+  { timestamps: true, _id: true }
+);
 
-const datapointModel = mongoose.model('Datapoint', datapointSchema);
+const datapointModel = mongoose.model("Datapoint", datapointSchema);
 export default datapointModel;
