@@ -10,7 +10,7 @@ const App = () => {
     null
   );
 
-  const views = [{ name: "DatapointViewer" }, { name: "DatpaointMap" }];
+  const views = [{ name: "DatapointViewer" }, { name: "DatapointMap" }];
   const [currentView, setCurrentView] = useState<string>(views[0].name);
 
   return (
