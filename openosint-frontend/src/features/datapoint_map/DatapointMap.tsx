@@ -9,7 +9,7 @@ import "./leaflet_custom_icons.css";
 const customMarkerIcon = L.divIcon({
   iconSize: [30, 30],
   iconAnchor: [15, 15],
-  popupAnchor: [10, 0],
+  popupAnchor: [0, 0],
   shadowSize: [0, 0],
   className: "animated-icon default-custom-icon",
 });
@@ -49,15 +49,27 @@ const DatapointMap: React.FC<DatapointMapProps> = ({ datapointId }) => {
               icon={customMarkerIcon}
             >
               <Popup>
-                <div className="text-sm">
-                  <strong>{dp.name}</strong>
-                  <p>{dp.description}</p>
-                  <p>
-                    Time:{" "}
+                <div className="text-sm w-56">
+                  <div className="font-bold text-base mb-1">{dp.name}</div>
+                  <div className="text-gray-400 text-xs mb-1">
+                    Event Time:{" "}
                     {dp.eventTime
                       ? new Date(dp.eventTime).toLocaleString()
                       : "N/A"}
-                  </p>
+                  </div>
+                  <div className="text-gray-500 text-xs mb-1">ID: {dp._id}</div>
+                  <div className="text-gray-400 text-xs mb-1">
+                    Created:{" "}
+                    {dp.createdAt
+                      ? new Date(dp.createdAt).toLocaleString()
+                      : "N/A"}
+                  </div>
+                  {dp.GPSlocation && (
+                    <div className="text-gray-400 text-xs mb-1">
+                      GPS: [{dp.GPSlocation.coordinates[0]},{" "}
+                      {dp.GPSlocation.coordinates[1]}]
+                    </div>
+                  )}
                 </div>
               </Popup>
             </Marker>
