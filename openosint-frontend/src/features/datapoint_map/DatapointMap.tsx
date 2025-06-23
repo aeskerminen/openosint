@@ -8,7 +8,7 @@ import "./leaflet_custom_icons.css";
 
 const customMarkerIcon = L.divIcon({
   iconSize: [30, 30],
-  iconAnchor: [10, 10],
+  iconAnchor: [15, 15],
   popupAnchor: [10, 0],
   shadowSize: [0, 0],
   className: "animated-icon default-custom-icon",
