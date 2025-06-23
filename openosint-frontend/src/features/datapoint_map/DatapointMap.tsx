@@ -3,6 +3,16 @@ import { useAppSelector } from "../../reduxHooks";
 import type { Datapoint } from "../../types/datapoint";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { selectAllDatapoints } from "../../slices/datapointSlice";
+import L from "leaflet";
+import "./leaflet_custom_icons.css";
+
+const customMarkerIcon = L.divIcon({
+  iconSize: [30, 30],
+  iconAnchor: [10, 10],
+  popupAnchor: [10, 0],
+  shadowSize: [0, 0],
+  className: "animated-icon default-custom-icon",
+});
 
 interface DatapointMapProps {
   datapointId: string | undefined;
@@ -36,6 +46,7 @@ const DatapointMap: React.FC<DatapointMapProps> = ({ datapointId }) => {
                 dp.GPSlocation?.coordinates[0] || 0,
                 dp.GPSlocation?.coordinates[1] || 0,
               ]}
+              icon={customMarkerIcon}
             >
               <Popup>
                 <div className="text-sm">
