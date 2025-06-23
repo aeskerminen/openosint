@@ -10,6 +10,9 @@ const App = () => {
     null
   );
 
+  const views = [{ name: "DatapointViewer" }, { name: "DatpaointMap" }];
+  const [currentView, setCurrentView] = useState<string>(views[0].name);
+
   return (
     <div className="flex flex-row h-full w-full">
       <DataPointExplorer
@@ -17,10 +20,17 @@ const App = () => {
         setSelectedDatapoint={setSelectedDatapoint}
       ></DataPointExplorer>
       <div className="flex-1 h-full flex flex-col max-h-full max-w-full">
-        <div id="problem" className="flex-1 flex flex-col max-w-full max-h-full">
-          <Toolbar></Toolbar>
-          <DatapointViewer datapointId={selectedDatapoint?._id} />
-          {false && <DatapointMap datapointId={selectedDatapoint?._id} />}
+        <div
+          id="problem"
+          className="flex-1 flex flex-col max-w-full max-h-full"
+        >
+          <Toolbar views={views} setCurrentView={setCurrentView}></Toolbar>
+          {currentView === views[0].name && (
+            <DatapointViewer datapointId={selectedDatapoint?._id} />
+          )}
+          {currentView === views[1].name && (
+            <DatapointMap datapointId={selectedDatapoint?._id} />
+          )}
         </div>
       </div>
     </div>
