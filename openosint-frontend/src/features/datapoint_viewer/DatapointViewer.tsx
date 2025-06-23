@@ -97,7 +97,7 @@ const DatapointViewer = ({
 
   if (!datapoint) {
     return (
-      <div className="flex-1 flex-col h-full bg-[#101010] p-4 rounded flex items-center justify-center text-gray-400">
+      <div className="flex-1 flex-col bg-[#101010] p-4 rounded flex items-center justify-center text-gray-400">
         Select a datapoint to view its image.
       </div>
     );
@@ -128,13 +128,12 @@ const DatapointViewer = ({
     }
   };
   return (
-    <div className="flex-1 flex flex-col h-full bg-[#101010] p-4 rounded overflow-hidden">
-      <div className="flex-1 flex items-center justify-center w-full overflow-hidden">
+    <div className="flex-1 flex flex-col bg-[#101010] p-4 rounded overflow-hidden">
+      <div className="flex-1 flex items-center justify-center overflow-hidden">
         <img
           src={`${config.API_BASE_URL}/images/${datapoint.filename}`}
           alt={datapoint.name}
-          className="max-w-full object-contain"
-          style={{ flex: 1 }}
+          className="object-cover" 
         />
       </div>
       <div
