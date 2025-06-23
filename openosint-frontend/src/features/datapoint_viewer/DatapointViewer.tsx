@@ -11,7 +11,13 @@ interface DatapointViewerProps {
 }
 
 const DatapointEditor: React.FC<{
-  form: { name: string; description: string; eventTime: string };
+  form: {
+    name: string;
+    description: string;
+    eventTime: string;
+    longitude: string;
+    latitude: string;
+  };
   onChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
@@ -46,6 +52,28 @@ const DatapointEditor: React.FC<{
       onChange={onChange}
       disabled={saving}
     />
+    <div className="flex gap-2 mb-2">
+      <input
+        className="px-2 py-1 rounded bg-[#222] text-white w-full"
+        name="longitude"
+        type="number"
+        step="any"
+        value={form.longitude}
+        onChange={onChange}
+        disabled={saving}
+        placeholder="Longitude"
+      />
+      <input
+        className="px-2 py-1 rounded bg-[#222] text-white w-full"
+        name="latitude"
+        type="number"
+        step="any"
+        value={form.latitude}
+        onChange={onChange}
+        disabled={saving}
+        placeholder="Latitude"
+      />
+    </div>
     <div className="flex gap-2 mt-2">
       <button
         className="bg-blue-600 text-white px-4 py-1 rounded"
@@ -66,10 +94,7 @@ const DatapointEditor: React.FC<{
   </>
 );
 
-const DatapointViewer = ({
-  datapointId,
-  onUpdate,
-}: DatapointViewerProps) => {
+const DatapointViewer = ({ datapointId, onUpdate }: DatapointViewerProps) => {
   const datapoint = useAppSelector((state) =>
     state.datapoints.value.find((dp: Datapoint) => dp._id === datapointId)
   );
@@ -79,6 +104,8 @@ const DatapointViewer = ({
     name: datapoint?.name || "",
     description: datapoint?.description || "",
     eventTime: datapoint?.eventTime || "",
+    longitude: datapoint?.GPSlocation?.coordinates?.[0]?.toString() || "",
+    latitude: datapoint?.GPSlocation?.coordinates?.[1]?.toString() || "",
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -90,6 +117,8 @@ const DatapointViewer = ({
       name: datapoint?.name || "",
       description: datapoint?.description || "",
       eventTime: datapoint?.eventTime || "",
+      longitude: datapoint?.GPSlocation?.coordinates?.[0]?.toString() || "",
+      latitude: datapoint?.GPSlocation?.coordinates?.[1]?.toString() || "",
     });
     setEditMode(false);
     setError(null);
@@ -113,10 +142,26 @@ const DatapointViewer = ({
     setSaving(true);
     setError(null);
     try {
+      const hasValidCoords =
+        form.longitude !== "" &&
+        form.latitude !== "" &&
+        !isNaN(Number(form.longitude)) &&
+        !isNaN(Number(form.latitude));
+
+      const gps = hasValidCoords
+        ? {
+            type: "Point" as const,
+            coordinates: [
+              parseFloat(form.longitude),
+              parseFloat(form.latitude),
+            ] as [number, number],
+          }
+        : undefined;
       const res = await datapointService.updateDatapoint(datapoint._id, {
         name: form.name,
         description: form.description,
         eventTime: form.eventTime,
+        GPSlocation: gps,
       });
       setEditMode(false);
       if (onUpdate) onUpdate(res.data);
@@ -133,7 +178,7 @@ const DatapointViewer = ({
         <img
           src={`${config.API_BASE_URL}/images/${datapoint.filename}`}
           alt={datapoint.name}
-          className="object-contain w-full h-full" 
+          className="object-contain w-full h-full"
         />
       </div>
       <div
@@ -168,6 +213,12 @@ const DatapointViewer = ({
             </div>
             <div className="text-gray-300 text-sm mb-1">
               Description: {datapoint.description || "No description"}
+            </div>
+            <div className="text-gray-300 text-sm mb-1">
+              GPS Location:{" "}
+              {datapoint.GPSlocation
+                ? `${datapoint.GPSlocation.coordinates[0]}, ${datapoint.GPSlocation.coordinates[1]}`
+                : "N/A"}
             </div>
             <hr className="w-full border-t border-[#333] my-2" />
             <div className="text-gray-500 text-xs mt-1">
