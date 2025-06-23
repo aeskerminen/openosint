@@ -10,7 +10,7 @@ const App = () => {
   );
 
   return (
-    <div className="flex flex-row items-center justify-center h-screen w-screen gap-2">
+    <div className="flex flex-row h-full w-full">
       <DataPointExplorer
         selectedDatapoint={selectedDatapoint}
         setSelectedDatapoint={setSelectedDatapoint}
