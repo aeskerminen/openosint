@@ -4,13 +4,14 @@ import DatapointViewer from "./features/datapoint_viewer/DatapointViewer";
 import type { Datapoint } from "./types/datapoint";
 import DatapointMap from "./features/datapoint_map/DatapointMap";
 import Toolbar from "./features/toolbar/Toolbar";
+import type { ToolbarView } from "./types/toolbarView";
 
 const App = () => {
   const [selectedDatapoint, setSelectedDatapoint] = useState<Datapoint | null>(
     null
   );
 
-  const views = [{ name: "DatapointViewer" }, { name: "DatapointMap" }];
+  const views : Array<ToolbarView> = [{ name: "DatapointViewer" }, { name: "DatapointMap" }];
   const [currentView, setCurrentView] = useState<string>(views[0].name);
 
   return (

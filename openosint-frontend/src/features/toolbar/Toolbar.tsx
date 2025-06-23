@@ -1,10 +1,10 @@
 import type React from "react";
+import type { ToolbarView } from "../../types/toolbarView";
 
 interface ToolbarProps {
-    views: Array<Object>,
+    views: Array<ToolbarView>,
     setCurrentView: (input : string) => void
 }
-
 
 const Toolbar : React.FC<ToolbarProps> = ({views, setCurrentView}) => {
     return(
