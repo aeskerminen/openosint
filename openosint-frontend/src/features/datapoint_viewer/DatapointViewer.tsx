@@ -133,7 +133,7 @@ const DatapointViewer = ({
         <img
           src={`${config.API_BASE_URL}/images/${datapoint.filename}`}
           alt={datapoint.name}
-          className="object-cover" 
+          className="object-contain w-full h-full" 
         />
       </div>
       <div

@@ -16,9 +16,9 @@ const App = () => {
         selectedDatapoint={selectedDatapoint}
         setSelectedDatapoint={setSelectedDatapoint}
       ></DataPointExplorer>
-      <div className="flex-1 h-full flex flex-col">
-        <Toolbar></Toolbar>
-        <div id="problem" className="flex-1 flex">
+      <div className="flex-1 h-full flex flex-col max-h-full max-w-full">
+        <div id="problem" className="flex-1 flex flex-col max-w-full max-h-full">
+          <Toolbar></Toolbar>
           <DatapointViewer datapointId={selectedDatapoint?._id} />
           {false && <DatapointMap datapointId={selectedDatapoint?._id} />}
         </div>
