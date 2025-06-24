@@ -27,10 +27,6 @@ interface DatapointMapProps {
 }
 
 const DatapointMap: React.FC<DatapointMapProps> = ({ datapointId }) => {
-  const datapoint = useAppSelector((state) =>
-    state.datapoints.value.find((dp: Datapoint) => dp._id === datapointId)
-  );
-
   const datapoints = useAppSelector(selectAllDatapoints);
 
   return (
