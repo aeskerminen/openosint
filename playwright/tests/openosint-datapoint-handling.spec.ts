@@ -3,7 +3,7 @@ import { beforeEach, describe } from "node:test";
 
 export default function createTests() {
   test.beforeEach(async ({ page }) => {
-    await page.goto("http://172.19.0.6:5173/");
+    await page.goto("https://localhost:443/");
   });
 
   test("Uploading image file works correctly.", async ({ page }) => {
