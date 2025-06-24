@@ -168,3 +168,4 @@ output/
 /blob-report/
 /playwright/.cache/
 /test-input-files
+/certs
