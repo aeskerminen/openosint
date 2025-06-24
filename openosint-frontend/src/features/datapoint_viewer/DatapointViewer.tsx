@@ -165,11 +165,20 @@ const DatapointViewer = ({ datapointId, onUpdate }: DatapointViewerProps) => {
       });
       setEditMode(false);
       if (onUpdate) onUpdate(res.data);
+      // Update Redux with correct GPSlocation object
+      dispatch(
+        update({
+          ...datapoint,
+          name: form.name,
+          description: form.description,
+          eventTime: form.eventTime,
+          GPSlocation: gps,
+        })
+      );
     } catch (err: any) {
       setError("Failed to update datapoint.");
     } finally {
       setSaving(false);
-      dispatch(update({ ...datapoint, ...form }));
     }
   };
   return (
