@@ -27,84 +27,76 @@ describe("OpenOSINT E2E Tests", () => {
   });
 
   test("Selecting a datapoint displays its image.", async ({ page }) => {
-    await page
-      .getByTestId("datapoint-list-container")
-      .first()
-      .locator(">div")
-      .first()
-      .click();
+    await page.getByTestId("datapoint-list-entry").first().click();
     await expect(page.getByTestId("datapoint-viewer-image")).toBeVisible();
   });
 
   describe("Editing a datapoint's", () => {
     test("name works correctly.", async ({ page }) => {
-      await page
-        .getByTestId("datapoint-list-container")
-        .first()
-        .locator(">div")
-        .first()
-        .click();
+      await page.getByTestId("datapoint-list-entry").first().click();
       await page.getByRole("button", { name: "Edit" }).click();
-      await page.getByRole("textbox", { name: "Name" }).dblclick();
+      await page.getByTestId("datapoint-viewer-attribute-name-edit").dblclick();
       await page
-        .getByRole("textbox", { name: "Name" })
+        .getByTestId("datapoint-viewer-attribute-name-edit")
         .fill("test_change_name");
-      await page.getByRole("button", { name: "Save" }).click();
-
-      await expect(page.getByRole("textbox", { name: "Name" })).toHaveValue(
-        "test_change_name"
-      );
+      await page.getByTestId("datapoint-viewer-save-button").click();
+      await expect(
+        page.getByTestId("datapoint-viewer-attribute-name")
+      ).toHaveText("test_change_name");
     }),
       test("description works correctly.", async ({ page }) => {
-        await page
-          .getByTestId("datapoint-list-container")
-          .first()
-          .locator(">div")
-          .first()
-          .click();
+        await page.getByTestId("datapoint-list-entry").first().click();
         await page.getByRole("button", { name: "Edit" }).click();
-        await page.getByRole("textbox", { name: "Description" }).click();
         await page
-          .getByRole("textbox", { name: "Description" })
+          .getByTestId("datapoint-viewer-attribute-description-edit")
+          .click();
+        await page
+          .getByTestId("datapoint-viewer-attribute-description-edit")
           .fill("test_change_description");
-        await page.getByRole("button", { name: "Save" }).click();
+        await page.getByTestId("datapoint-viewer-save-button").click();
 
         await expect(
-          page.getByRole("textbox", { name: "Description" })
-        ).toHaveValue("test_change_description");
+          page.getByTestId("datapoint-viewer-attribute-description")
+        ).toHaveText("test_change_description");
       }),
       test("event time works correctly.", async ({ page }) => {
-        await page
-          .getByTestId("datapoint-list-container")
-          .first()
-          .locator(">div")
-          .first()
-          .click();
+        await page.getByTestId("datapoint-list-entry").first().click();
         await page.getByRole("button", { name: "Edit" }).click();
-        await page.locator('input[name="eventTime"]').click();
-        await page.locator('input[name="eventTime"]').fill("2023-01-22T15:40");
-        await page.getByRole("button", { name: "Save" }).click();
+        await page
+          .getByTestId("datapoint-viewer-attribute-eventtime-edit")
+          .click();
+        await page
+          .getByTestId("datapoint-viewer-attribute-eventtime-edit")
+          .fill("2023-01-22T05:40");
+        await page.getByTestId("datapoint-viewer-save-button").click();
 
-        await expect(page.locator('input[name="eventTime"]')).toHaveValue(
-          "2023-01-22T15:40"
-        );
+        await expect(
+          page.getByTestId("datapoint-viewer-attribute-eventtime")
+        ).toHaveText("1/22/2023, 5:40:00 AM");
       }),
       test("GPS location works correctly.", async ({ page }) => {
-        await page
-          .getByTestId("datapoint-list-container")
-          .first()
-          .locator(">div")
-          .first()
-          .click();
+        await page.getByTestId("datapoint-list-entry").first().click();
         await page.getByRole("button", { name: "Edit" }).click();
-        await page.getByPlaceholder("Longitude").click();
-        await page.getByPlaceholder("Longitude").fill("22");
-        await page.getByPlaceholder("Longitude").press("Tab");
-        await page.getByPlaceholder("Latitude").fill("13");
-        await page.getByRole("button", { name: "Save" }).click();
+        await page
+          .getByTestId("datapoint-viewer-attribute-longitude-edit")
+          .click();
+        await page
+          .getByTestId("datapoint-viewer-attribute-longitude-edit")
+          .fill("22");
+        await page
+          .getByTestId("datapoint-viewer-attribute-longitude-edit")
+          .press("Tab");
+        await page
+          .getByTestId("datapoint-viewer-attribute-latitude-edit")
+          .fill("13");
+        await page.getByTestId("datapoint-viewer-save-button").click();
 
-        await expect(page.getByPlaceholder("Longitude")).toHaveValue("22");
-        await expect(page.getByPlaceholder("Latitude")).toHaveValue("13");
+        await expect(
+          page.getByTestId("datapoint-viewer-attribute-longitude")
+        ).toHaveText("22");
+        await expect(
+          page.getByTestId("datapoint-viewer-attribute-latitude")
+        ).toHaveText("13");
       });
   });
 });
