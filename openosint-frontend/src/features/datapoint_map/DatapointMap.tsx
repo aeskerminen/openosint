@@ -14,6 +14,14 @@ const customMarkerIcon = L.divIcon({
   className: "animated-icon default-custom-icon",
 });
 
+const customSelectedMarkerIcon = L.divIcon({
+  iconSize: [30, 30],
+  iconAnchor: [15, 15],
+  popupAnchor: [0, 0],
+  shadowSize: [0, 0],
+  className: "animated-icon selected-custom-icon",
+});
+
 interface DatapointMapProps {
   datapointId: string | undefined;
 }
@@ -51,7 +59,11 @@ const DatapointMap: React.FC<DatapointMapProps> = ({ datapointId }) => {
                 dp.GPSlocation?.coordinates[0] || 0,
                 dp.GPSlocation?.coordinates[1] || 0,
               ]}
-              icon={customMarkerIcon}
+              icon={
+                dp._id === datapointId
+                  ? customSelectedMarkerIcon
+                  : customMarkerIcon
+              }
             >
               <Popup>
                 <div className="text-sm w-56">
@@ -75,6 +87,12 @@ const DatapointMap: React.FC<DatapointMapProps> = ({ datapointId }) => {
                       {dp.GPSlocation.coordinates[1]}]
                     </div>
                   )}
+                  <button
+                    className="bg-blue-600 text-white p-1 rounded mt-2"
+                    onClick={() => {}}
+                  >
+                    Details
+                  </button>
                 </div>
               </Popup>
             </Marker>
