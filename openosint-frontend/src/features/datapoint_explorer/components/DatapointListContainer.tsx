@@ -49,7 +49,7 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
         <h2 className="text-white mb-2">
           This section will display all uploaded datapoints.
         </h2>
-        <div className="flex flex-col gap-2">
+        <div data-testid="datapoint-list-container" className="flex flex-col gap-2">
           {datapoints.map((datapoint: Datapoint) => {
             const date = new Date(datapoint.createdAt);
             return (

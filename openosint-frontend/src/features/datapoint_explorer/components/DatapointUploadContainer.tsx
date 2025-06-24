@@ -68,7 +68,7 @@ const DatapointUploadContainer: React.FC<
           Upload Datapoint
         </button>
       </form>
-      <div className="bg-[#1a1a1a] p-4 rounded">Status: {status}</div>
+      <div data-testid="upload-status-container" className="bg-[#1a1a1a] p-4 rounded">Status: {status}</div>
     </div>
   );
 };
