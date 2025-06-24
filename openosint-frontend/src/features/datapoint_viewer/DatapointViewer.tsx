@@ -28,6 +28,7 @@ const DatapointEditor: React.FC<{
 }> = ({ form, onChange, onSave, onCancel, saving, error }) => (
   <>
     <input
+      data-testid="datapoint-viewer-attribute-name-edit"
       className="mb-2 px-2 py-1 rounded bg-[#222] text-white w-full"
       name="name"
       value={form.name}
@@ -36,6 +37,7 @@ const DatapointEditor: React.FC<{
       placeholder="Name"
     />
     <textarea
+      data-testid="datapoint-viewer-attribute-description-edit"
       className="mb-2 px-2 py-1 rounded bg-[#222] text-white w-full"
       name="description"
       value={form.description}
@@ -45,6 +47,7 @@ const DatapointEditor: React.FC<{
       rows={2}
     />
     <input
+      data-testid="datapoint-viewer-attribute-eventtime-edit"
       className="mb-2 px-2 py-1 rounded bg-[#222] text-white w-full"
       name="eventTime"
       type="datetime-local"
@@ -54,6 +57,7 @@ const DatapointEditor: React.FC<{
     />
     <div className="flex gap-2 mb-2">
       <input
+        data-testid="datapoint-viewer-attribute-longitude-edit"
         className="px-2 py-1 rounded bg-[#222] text-white w-full"
         name="longitude"
         type="number"
@@ -64,6 +68,7 @@ const DatapointEditor: React.FC<{
         placeholder="Longitude"
       />
       <input
+        data-testid="datapoint-viewer-attribute-latitude-edit"
         className="px-2 py-1 rounded bg-[#222] text-white w-full"
         name="latitude"
         type="number"
@@ -76,6 +81,7 @@ const DatapointEditor: React.FC<{
     </div>
     <div className="flex gap-2 mt-2">
       <button
+        data-testid="datapoint-viewer-save-button"
         className="bg-blue-600 text-white px-4 py-1 rounded"
         onClick={onSave}
         disabled={saving}
@@ -83,6 +89,7 @@ const DatapointEditor: React.FC<{
         Save
       </button>
       <button
+        data-testid="datapoint-viewer-cancel-button"
         className="bg-gray-600 text-white px-4 py-1 rounded"
         onClick={onCancel}
         disabled={saving}
@@ -207,7 +214,9 @@ const DatapointViewer = ({ datapointId, onUpdate }: DatapointViewerProps) => {
         ) : (
           <>
             <div className="text-white text-lg font-bold flex items-center gap-2 w-full">
-              <p>{datapoint.name}</p>
+              <p data-testid="datapoint-viewer-attribute-name">
+                {datapoint.name}
+              </p>
               <button
                 className="ml-2 text-xs bg-gray-900 px-2 py-1 rounded ml-auto"
                 onClick={() => setEditMode(true)}
@@ -216,26 +225,45 @@ const DatapointViewer = ({ datapointId, onUpdate }: DatapointViewerProps) => {
               </button>
             </div>
             <div className="text-gray-400 text-sm mb-1">
-              Event Time:{" "}
-              {datapoint.eventTime
-                ? new Date(datapoint.eventTime).toLocaleString()
-                : "N/A"}
+              Event Time:
+              <span data-testid="datapoint-viewer-attribute-eventtime">
+                {datapoint.eventTime
+                  ? new Date(datapoint.eventTime).toLocaleString()
+                  : "N/A"}
+              </span>
             </div>
             <div className="text-gray-300 text-sm mb-1">
-              Description: {datapoint.description || "No description"}
+              Description:
+              <span data-testid="datapoint-viewer-attribute-description">
+                {datapoint.description || "No description"}
+              </span>
             </div>
             <div className="text-gray-300 text-sm mb-1">
-              GPS Location:{" "}
-              {datapoint.GPSlocation
-                ? `${datapoint.GPSlocation.coordinates[0]}, ${datapoint.GPSlocation.coordinates[1]}`
-                : "N/A"}
+              GPS Location:
+              <span data-testid="datapoint-viewer-attribute-longitude">
+                {datapoint.GPSlocation
+                  ? `${datapoint.GPSlocation.coordinates[0]}`
+                  : "N/A"}
+              </span>
+              <span>,</span>
+              <span data-testid="datapoint-viewer-attribute-latitude">
+                {datapoint.GPSlocation
+                  ? `${datapoint.GPSlocation.coordinates[1]}`
+                  : "N/A"}
+              </span>
             </div>
             <hr className="w-full border-t border-[#333] my-2" />
             <div className="text-gray-500 text-xs mt-1">
-              ID: {datapoint._id}
+              ID:
+              <span data-testid="datapoint-viewer-attribute-id">
+                {datapoint._id}
+              </span>
             </div>
             <div className="text-gray-400 text-sm mb-1">
-              Created: {new Date(datapoint.createdAt).toLocaleString()}
+              Created:
+              <span data-testid="datapoint-viewer-attribute-createdat">
+                {new Date(datapoint.createdAt).toLocaleString()}
+              </span>
             </div>
           </>
         )}

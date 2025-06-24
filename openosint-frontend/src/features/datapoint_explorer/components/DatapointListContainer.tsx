@@ -54,6 +54,7 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
             const date = new Date(datapoint.createdAt);
             return (
               <div
+              data-testid="datapoint-list-entry"
                 key={datapoint._id}
                 className={`flex items-center gap-4 p-2 bg-[#232323] rounded cursor-pointer hover:bg-[#333] transition-all ${
                   selectedDatapoint && selectedDatapoint._id === datapoint._id
