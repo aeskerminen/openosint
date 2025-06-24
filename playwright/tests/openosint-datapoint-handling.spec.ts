@@ -30,4 +30,14 @@ export default function createTests() {
     await page.getByTestId("datapoint-list-entry").first().click();
     await expect(page.getByTestId("datapoint-viewer-image")).toBeVisible();
   });
+
+  test("Removing a datapoint works correctly.", async ({ page }) => {
+    await page.getByTestId("datapoint-list-remove-button").click();
+
+    await page
+      .getByTestId("datapoint-list-container")
+      .first()
+      .evaluate((el) => el.childElementCount)
+      .then((count) => expect(count).toBe(0));
+  });
 }

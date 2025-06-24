@@ -7,6 +7,18 @@ export default function createTests() {
   });
 
   test("name works correctly.", async ({ page }) => {
+    await page.getByRole("button", { name: "Choose File" }).click();
+    await page
+      .getByRole("button", { name: "Choose File" })
+      .setInputFiles("./test-input-files/leopard2_test.png");
+    await page.getByRole("button", { name: "Upload Datapoint" }).click();
+    await expect(page.getByTestId("upload-status-container")).toHaveText(
+      /Status:\s*done/i,
+      {
+        timeout: 10000,
+      }
+    );
+
     await page.getByTestId("datapoint-list-entry").first().click();
     await page.getByRole("button", { name: "Edit" }).click();
     await page.getByTestId("datapoint-viewer-attribute-name-edit").dblclick();
