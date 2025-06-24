@@ -1,6 +1,5 @@
 import React from "react";
 import { useAppSelector } from "../../reduxHooks";
-import type { Datapoint } from "../../types/datapoint";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { selectAllDatapoints } from "../../slices/datapointSlice";
 import L from "leaflet";
