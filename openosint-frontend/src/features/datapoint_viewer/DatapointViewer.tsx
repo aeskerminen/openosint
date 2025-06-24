@@ -185,6 +185,7 @@ const DatapointViewer = ({ datapointId, onUpdate }: DatapointViewerProps) => {
     <div className="flex-1 flex flex-col bg-[#101010] p-4 rounded overflow-hidden">
       <div className="flex-1 flex items-center justify-center overflow-hidden">
         <img
+          data-testid="datapoint-viewer-image"
           src={`${config.API_BASE_URL}/images/${datapoint.filename}`}
           alt={datapoint.name}
           className="object-contain w-full h-full"
