@@ -161,3 +161,10 @@ env/
 output/
 *.rdb
 *.sh
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/test-input-files
