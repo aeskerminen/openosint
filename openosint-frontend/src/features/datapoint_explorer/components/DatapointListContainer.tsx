@@ -33,7 +33,7 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
     datapointService
       .removeDatapoint(datapoint._id)
       .then((result) => {
-        dispatch(remove(datapoint))
+        dispatch(remove(datapoint));
         console.log("Datapoint removed:", result);
       })
       .catch((error) => {
@@ -49,12 +49,15 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
         <h2 className="text-white mb-2">
           This section will display all uploaded datapoints.
         </h2>
-        <div data-testid="datapoint-list-container" className="flex flex-col gap-2">
+        <div
+          data-testid="datapoint-list-container"
+          className="flex flex-col gap-2"
+        >
           {datapoints.map((datapoint: Datapoint) => {
             const date = new Date(datapoint.createdAt);
             return (
               <div
-              data-testid="datapoint-list-entry"
+                data-testid="datapoint-list-entry"
                 key={datapoint._id}
                 className={`flex items-center gap-4 p-2 bg-[#232323] rounded cursor-pointer hover:bg-[#333] transition-all ${
                   selectedDatapoint && selectedDatapoint._id === datapoint._id
@@ -77,6 +80,7 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
                   </span>
                 </div>
                 <button
+                  data-testid="datapoint-list-remove-button"
                   className="text-red-500 hover:text-red-700 transition-colors"
                   onClick={(e) => {
                     e.stopPropagation();
