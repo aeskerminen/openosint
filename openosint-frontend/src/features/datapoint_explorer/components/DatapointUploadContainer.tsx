@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import datapointService from "../../../services/datapointService";
 import { useJobStatus } from "../hooks/useJobStatus";
+import { useAppDispatch } from "../../../reduxHooks";
+import { fetchDatapoints } from "../../../slices/datapointSlice";
 
 interface DatapointUploadContainerProps {}
 
@@ -12,6 +14,8 @@ const DatapointUploadContainer: React.FC<
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+
+  const dispatch = useAppDispatch();
 
   const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -38,6 +42,7 @@ const DatapointUploadContainer: React.FC<
   useJobStatus(jobID, () => {
     setStatus("done");
     setJobID("");
+    dispatch(fetchDatapoints());
   });
 
   return (
