@@ -9,7 +9,6 @@ r = redis.Redis(host='redis', port=3004, decode_responses=True)
 
 while True:
     job_data = r.blpop('ml:jobs', timeout=5)
-    print("Waiting for job data...")
     if job_data:
         print(f"Received job data: {job_data}")
         _, raw_job = job_data

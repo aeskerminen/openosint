@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3003"
+const API_BASE_URL = "https://localhost:443/api"
 
 export const config = {
     API_BASE_URL

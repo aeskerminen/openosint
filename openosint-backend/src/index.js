@@ -22,7 +22,7 @@ app.use(
   })
 );
 
-app.use('/images', express.static(path.join(config.__dirname, '../../data/output')));
+app.use('/api/images', express.static(path.join(config.__dirname, '../../data/output')));
 
 socketIOserver.on("connection", (socket) => {
   console.log("Frontend connected to Socket.IO server");
@@ -43,7 +43,7 @@ socketIOserver.on("connection", (socket) => {
   console.log("Subscribed to ml:results channel");
 })();
 
-app.use("/datapoints", datapointsRouter);
+app.use("/api/datapoints", datapointsRouter);
 
 httpServer.listen(config.BACKEND_PORT, () => {
   console.log(`Example app listening on port ${config.BACKEND_PORT}`);
