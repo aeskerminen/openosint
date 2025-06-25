@@ -4,7 +4,7 @@ import morgan from "morgan";
 import { createServer } from "http";
 import datapointsRouter from "./routes/datapoints.js";
 import config from "./config.js";
-import { Server } from "socket.io";
+import { Server} from "socket.io";
 import redis from "./redisClient.js";
 import path from "path";
 
@@ -22,7 +22,10 @@ app.use(
   })
 );
 
-app.use('/api/images', express.static(path.join(config.__dirname, '../../data/output')));
+app.use(
+  "/api/images",
+  express.static(path.join(config.__dirname, "../../data/output"))
+);
 
 socketIOserver.on("connection", (socket) => {
   console.log("Frontend connected to Socket.IO server");

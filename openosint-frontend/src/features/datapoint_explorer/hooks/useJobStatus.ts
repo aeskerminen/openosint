@@ -10,7 +10,7 @@ export const useJobStatus = (jobID: string, onComplete: () => void) => {
 
     console.log(jobID)
 
-    const socket = io(config.API_BASE_URL);
+    const socket = io(config.NGINX_BASE_URL, {path: "/socket.io"});
     socketRef.current = socket;
 
     socket.on("connect", () => {
