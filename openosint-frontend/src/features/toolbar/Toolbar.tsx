@@ -11,7 +11,7 @@ const Toolbar : React.FC<ToolbarProps> = ({views, setCurrentView}) => {
         <div className="p-2 flex flex-row gap-2 bg-black justify-center">
             {views.map((view) => {
                 return(
-                    <button data-testid={`toolbar-${view.name}-button`} onClick={() => {setCurrentView(view.name)}} className="p-2 bg-[#181818]">{view.name}</button>
+                    <button key={view.name} data-testid={`toolbar-${view.name}-button`} onClick={() => {setCurrentView(view.name)}} className="p-2 bg-[#181818]">{view.name}</button>
                 )
             })}
         </div>
