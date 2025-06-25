@@ -29,7 +29,7 @@ const DatapointMap: React.FC<DatapointMapProps> = ({ datapointId }) => {
   const datapoints = useAppSelector(selectAllDatapoints);
 
   return (
-    <div className="flex-1 flex-col h-full bg-[#101010] p-4 rounded flex items-center justify-center text-gray-400">
+    <div data-testid="datapoint-map-container" className="flex-1 flex-col h-full bg-[#101010] p-4 rounded flex items-center justify-center text-gray-400">
       <MapContainer
         style={{ height: "100%", width: "100%" }}
         center={[60.16, 24.9]}
