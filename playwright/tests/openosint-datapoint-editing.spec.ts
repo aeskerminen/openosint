@@ -1,23 +1,20 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, Page } from "@playwright/test";
+import { createTestDatapoint } from "../utils/testUtils";
 
 export default function createTests() {
+  let page: Page;
+
+  test.beforeAll(async ({ browser }) => {
+    page = await browser.newPage();
+
+    await createTestDatapoint(page);
+  });
+
   test.beforeEach(async ({ page }) => {
     await page.goto("https://localhost:443/");
   });
 
   test("name works correctly.", async ({ page }) => {
-    await page.getByRole("button", { name: "Choose File" }).click();
-    await page
-      .getByRole("button", { name: "Choose File" })
-      .setInputFiles("./test-input-files/leopard2_test.png");
-    await page.getByRole("button", { name: "Upload Datapoint" }).click();
-    await expect(page.getByTestId("upload-status-container")).toHaveText(
-      /Status:\s*done/i,
-      {
-        timeout: 10000,
-      }
-    );
-
     await page.getByTestId("datapoint-list-entry").first().click();
     await page.getByRole("button", { name: "Edit" }).click();
     await page.getByTestId("datapoint-viewer-attribute-name-edit").dblclick();

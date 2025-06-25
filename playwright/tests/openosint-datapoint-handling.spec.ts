@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { createTestDatapoint } from "../utils/testUtils";
 
 export default function createTests() {
   test.beforeEach(async ({ page }) => {
@@ -6,17 +7,7 @@ export default function createTests() {
   });
 
   test("Uploading image file works correctly.", async ({ page }) => {
-    await page.getByRole("button", { name: "Choose File" }).click();
-    await page
-      .getByRole("button", { name: "Choose File" })
-      .setInputFiles("./test-input-files/leopard2_test.png");
-    await page.getByRole("button", { name: "Upload Datapoint" }).click();
-    await expect(page.getByTestId("upload-status-container")).toHaveText(
-      /Status:\s*done/i,
-      {
-        timeout: 10000,
-      }
-    );
+    await createTestDatapoint(page);
 
     await page
       .getByTestId("datapoint-list-container")
