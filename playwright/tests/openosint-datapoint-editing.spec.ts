@@ -14,9 +14,18 @@ export default function createTests() {
     await page.goto("https://localhost:443/");
   });
 
-  test("name works correctly.", async ({ page }) => {
+  test.afterAll(async () => {
+    await page.getByTestId("datapoint-list-remove-button").first().click();
+    await page.close();
+  });
+
+  const editFirstDatapoint = async (page: Page) => {
     await page.getByTestId("datapoint-list-entry").first().click();
     await page.getByRole("button", { name: "Edit" }).click();
+  };
+
+  test("name works correctly.", async ({ page }) => {
+    await editFirstDatapoint(page);
     await page.getByTestId("datapoint-viewer-attribute-name-edit").dblclick();
     await page
       .getByTestId("datapoint-viewer-attribute-name-edit")
@@ -27,8 +36,7 @@ export default function createTests() {
     ).toHaveText("test_change_name");
   }),
     test("description works correctly.", async ({ page }) => {
-      await page.getByTestId("datapoint-list-entry").first().click();
-      await page.getByRole("button", { name: "Edit" }).click();
+      editFirstDatapoint(page);
       await page
         .getByTestId("datapoint-viewer-attribute-description-edit")
         .click();
@@ -42,8 +50,7 @@ export default function createTests() {
       ).toHaveText("test_change_description");
     }),
     test("event time works correctly.", async ({ page }) => {
-      await page.getByTestId("datapoint-list-entry").first().click();
-      await page.getByRole("button", { name: "Edit" }).click();
+      editFirstDatapoint(page);
       await page
         .getByTestId("datapoint-viewer-attribute-eventtime-edit")
         .click();
@@ -57,8 +64,7 @@ export default function createTests() {
       ).toHaveText("1/22/2023, 5:40:00 AM");
     }),
     test("GPS location works correctly.", async ({ page }) => {
-      await page.getByTestId("datapoint-list-entry").first().click();
-      await page.getByRole("button", { name: "Edit" }).click();
+      editFirstDatapoint(page);
       await page
         .getByTestId("datapoint-viewer-attribute-longitude-edit")
         .click();

@@ -22,7 +22,7 @@ export default function createTests() {
   });
 
   test("Removing a datapoint works correctly.", async ({ page }) => {
-    await page.getByTestId("datapoint-list-remove-button").click();
+    await page.getByTestId("datapoint-list-remove-button").first().click();
 
     await page
       .getByTestId("datapoint-list-container")
