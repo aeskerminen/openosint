@@ -1,5 +1,5 @@
 import { config } from "../../../config";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   fetchDatapoints,
   selectAllDatapoints,
@@ -9,6 +9,7 @@ import type { Datapoint } from "../../../types/datapoint";
 import { useAppDispatch, useAppSelector } from "../../../reduxHooks";
 import datapointService from "../../../services/datapointService";
 import { remove } from "../../../slices/datapointSlice";
+import { useJobStatus } from "../hooks/useJobStatus";
 
 interface DatapointListContainerProps {
   onSelect: (datapoint: Datapoint) => void;
@@ -22,6 +23,15 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
   const dispatch = useAppDispatch();
   const datapoints = useAppSelector(selectAllDatapoints);
   const datapointsStatus = useAppSelector(selectDatapointsStatus);
+  const [showModal, setShowModal] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    description: "",
+    eventTime: "",
+    longitude: "",
+    latitude: "",
+    file: null as File | null,
+  });
 
   useEffect(() => {
     if (datapointsStatus === "idle") {
@@ -42,9 +52,80 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
       });
   };
 
+  const handleModalInput = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, file: e.target.files ? e.target.files[0] : null });
+  };
+
+  const handleModalSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.file) {
+      alert("Please select a file to upload.");
+      return;
+    }
+
+    const hasValidCoords =
+      form.longitude !== "" &&
+      form.latitude !== "" &&
+      !isNaN(Number(form.longitude)) &&
+      !isNaN(Number(form.latitude));
+
+    const gps = hasValidCoords
+      ? {
+          type: "Point" as const,
+          coordinates: [
+            parseFloat(form.longitude),
+            parseFloat(form.latitude),
+          ] as [number, number],
+        }
+      : undefined;
+
+    const formData = new FormData();
+    formData.append("file", form.file);
+    formData.append("name", form.name);
+    formData.append("description", form.description);
+    formData.append("eventTime", new Date(form.eventTime).toISOString());
+    formData.append("GPSlocation", JSON.stringify(gps || null));
+    datapointService
+      .uploadDatapoint(formData)
+      .then((response) => {
+        setStatus("processing");
+        setJobID(response.data.jobID);
+      })
+      .catch(() => {
+        alert("Failed to upload file. Please try again.");
+      })
+      .finally(() => {
+        setShowModal(false);
+      });
+  };
+
+  const [jobID, setJobID] = useState<string>("");
+  const [status, setStatus] = useState<string>("idle");
+
+  useJobStatus(jobID, () => {
+    setStatus("done");
+    setJobID("");
+    dispatch(fetchDatapoints());
+  });
+
   return (
     <div className="flex-1">
-      <p className="text-xl font-bold mb-4">Datapoints</p>
+      <div className="flex items-center mb-4">
+        <p className="text-xl font-bold mr-2">Datapoints</p>
+        <button
+          className="ml-2 bg-green-500 hover:bg-green-600 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg transition-all"
+          title="Add Datapoint"
+          onClick={() => setShowModal(true)}
+        >
+          <span className="text-2xl leading-none">+</span>
+        </button>
+      </div>
       <div className="bg-[#1a1a1a] p-4 rounded">
         <h2 className="text-white mb-2">
           This section will display all uploaded datapoints.
@@ -94,6 +175,84 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
           })}
         </div>
       </div>
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+          <form
+            className="bg-[#232323] p-8 rounded-lg shadow-2xl flex flex-col gap-4 min-w-[350px] max-w-[90vw]"
+            onSubmit={handleModalSubmit}
+            style={{ minWidth: 350 }}
+          >
+            <h2 className="text-2xl font-bold text-white mb-2">
+              Add New Datapoint
+            </h2>
+            <input
+              className="p-2 rounded bg-[#181818] text-white border border-[#444]"
+              name="name"
+              placeholder="Name"
+              value={form.name}
+              onChange={handleModalInput}
+              required
+            />
+            <textarea
+              className="p-2 rounded bg-[#181818] text-white border border-[#444]"
+              name="description"
+              placeholder="Description"
+              value={form.description}
+              onChange={handleModalInput}
+              rows={2}
+            />
+            <input
+              className="p-2 rounded bg-[#181818] text-white border border-[#444]"
+              name="eventTime"
+              type="datetime-local"
+              value={form.eventTime}
+              onChange={handleModalInput}
+            />
+            <div className="flex gap-2">
+              <input
+                className="p-2 rounded bg-[#181818] text-white border border-[#444] flex-1"
+                name="longitude"
+                placeholder="Longitude"
+                value={form.longitude}
+                onChange={handleModalInput}
+                type="number"
+                step="any"
+              />
+              <input
+                className="p-2 rounded bg-[#181818] text-white border border-[#444] flex-1"
+                name="latitude"
+                placeholder="Latitude"
+                value={form.latitude}
+                onChange={handleModalInput}
+                type="number"
+                step="any"
+              />
+            </div>
+            <input
+              className="p-2 rounded bg-[#181818] text-white border border-[#444]"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              required
+            />
+            <div className="flex gap-2 mt-2">
+              <button
+                type="submit"
+                className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-2 rounded transition-all"
+              >
+                Upload
+              </button>
+              <button
+                type="button"
+                className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 rounded transition-all"
+                onClick={() => setShowModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 };

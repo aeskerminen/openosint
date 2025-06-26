@@ -26,7 +26,23 @@ if (!fs.existsSync(outputDir)) {
 }
 
 router.post("/upload", multerUpload.single("file"), async (req, res) => {
-  const datapoint = req.body;
+  const raw_datapoint = req.body;
+
+  const parsedGPS = raw_datapoint.GPSlocation
+    ? JSON.parse(raw_datapoint.GPSlocation)
+    : undefined;
+  const parsedEventTime = raw_datapoint.eventTime
+    ? new Date(raw_datapoint.eventTime)
+    : undefined;
+
+  const datapoint = {
+    name: raw_datapoint.name,
+    description: raw_datapoint.description,
+    filename: raw_datapoint.filename,
+    eventTime: parsedEventTime,
+    GPSlocation: parsedGPS,
+  };
+
   datapoint.filename =
     Date.now() +
     "-" +
@@ -134,7 +150,7 @@ router.put("/:id", async (req, res) => {
     if (!updatedDatapoint) {
       return res.status(404).json({ error: "Datapoint not found" });
     }
-    
+
     res.status(200).json(updatedDatapoint);
   } catch (err) {
     console.error("Error updating datapoint:", err);
