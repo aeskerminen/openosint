@@ -1,9 +1,10 @@
 import type { Datapoint } from "../../types/datapoint";
 import { config } from "../../config";
 import React, { useState } from "react";
-import datapointService from "../../services/datapointService";
+import imageDataointService from "../../services/imageDatapointService";
 import { useAppDispatch, useAppSelector } from "../../reduxHooks";
-import { update } from "../../slices/datapointSlice";
+import { update } from "../../slices/imageDatapointSlice";
+import imageDatapointService from "../../services/imageDatapointService";
 
 interface DatapointViewerProps {
   datapointId: string | undefined;
@@ -103,7 +104,7 @@ const DatapointEditor: React.FC<{
 
 const DatapointViewer = ({ datapointId, onUpdate }: DatapointViewerProps) => {
   const datapoint = useAppSelector((state) =>
-    state.datapoints.value.find((dp: Datapoint) => dp._id === datapointId)
+    state.imageDatapoints.value.find((dp: Datapoint) => dp._id === datapointId)
   );
 
   const [editMode, setEditMode] = useState(false);
@@ -164,7 +165,7 @@ const DatapointViewer = ({ datapointId, onUpdate }: DatapointViewerProps) => {
             ] as [number, number],
           }
         : undefined;
-      const res = await datapointService.updateDatapoint(datapoint._id, {
+      const res = await imageDatapointService.updateImageDatapoint(datapoint._id, {
         name: form.name,
         description: form.description,
         eventTime: form.eventTime,

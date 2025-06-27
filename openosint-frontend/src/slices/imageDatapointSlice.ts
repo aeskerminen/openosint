@@ -1,35 +1,32 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { Datapoint } from "../types/datapoint";
-import axios from "axios";
-import { config } from "../config";
 import type { RootState } from "../store";
+import imageDatapointService from "../services/imageDatapointService";
 
-interface datapointState {
+interface imageDatapointState {
   value: Array<Datapoint>;
   status: "idle" | "pending" | "succeeded" | "failed";
   error: string | null;
 }
 
-export const fetchDatapoints = createAsyncThunk(
-  "datapoints/fetchDatapoints",
+export const fetchImageDatapoints = createAsyncThunk(
+  "imageDatapoints/fetchImageDatapoints",
   async () => {
-    const res = await axios.get<Datapoint[]>(
-      config.API_BASE_URL + "/" + "datapoints"
-    );
+    const res = await imageDatapointService.getImageDatapoints();
 
-    console.log(res.data)
+    console.log(res.data);
     return res.data;
   }
 );
 
-const initialState: datapointState = {
+const initialState: imageDatapointState = {
   value: [],
   status: "idle",
   error: null,
 };
 
-export const datapointSlice = createSlice({
-  name: "datapoints",
+export const imageDatapointSlice = createSlice({
+  name: "imageDatapoints",
   initialState,
   reducers: {
     add: (state, action) => {
@@ -54,24 +51,25 @@ export const datapointSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchDatapoints.pending, (state) => {
+      .addCase(fetchImageDatapoints.pending, (state) => {
         state.status = "pending";
       })
-      .addCase(fetchDatapoints.fulfilled, (state, action) => {
+      .addCase(fetchImageDatapoints.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.value.push(...action.payload);
       })
-      .addCase(fetchDatapoints.rejected, (state, action) => {
+      .addCase(fetchImageDatapoints.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message ?? "Unknown Error";
       });
   },
 });
 
-export const { add, update, remove } = datapointSlice.actions;
+export const { add, update, remove } = imageDatapointSlice.actions;
 
-export default datapointSlice.reducer;
+export default imageDatapointSlice.reducer;
 
-export const selectAllDatapoints = (state : RootState) => state.datapoints.value;
+export const selectAllImageDatapoints = (state: RootState) => state.imageDatapoints.value;
 
-export const selectDatapointsStatus = (state: RootState) => state.datapoints.status;
+export const selectImageDatapointsStatus = (state: RootState) =>
+  state.imageDatapoints.status;

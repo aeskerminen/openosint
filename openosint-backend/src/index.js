@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import { createServer } from "http";
-import datapointsRouter from "./routes/datapoints.js";
+import imageDatapointsRouter from "./routes/imageDatapoints.js";
 import config from "./config.js";
 import { Server} from "socket.io";
 import redis from "./redisClient.js";
@@ -46,7 +46,7 @@ socketIOserver.on("connection", (socket) => {
   console.log("Subscribed to ml:results channel");
 })();
 
-app.use("/api/datapoints", datapointsRouter);
+app.use("/api/imageDatapoints", imageDatapointsRouter);
 
 httpServer.listen(config.BACKEND_PORT, () => {
   console.log(`Example app listening on port ${config.BACKEND_PORT}`);

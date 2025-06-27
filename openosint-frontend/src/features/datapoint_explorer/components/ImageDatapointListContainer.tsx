@@ -1,16 +1,17 @@
 import { config } from "../../../config";
 import React, { useEffect, useState } from "react";
 import {
-  fetchDatapoints,
-  selectAllDatapoints,
-  selectDatapointsStatus,
-} from "../../../slices/datapointSlice";
+  fetchImageDatapoints,
+  selectAllImageDatapoints,
+  selectImageDatapointsStatus,
+} from "../../../slices/imageDatapointSlice";
 import type { Datapoint } from "../../../types/datapoint";
 import { useAppDispatch, useAppSelector } from "../../../reduxHooks";
-import datapointService from "../../../services/datapointService";
-import { remove } from "../../../slices/datapointSlice";
+import datapointService from "../../../services/imageDatapointService";
+import { remove } from "../../../slices/imageDatapointSlice";
 import { useJobStatus } from "../hooks/useJobStatus";
 import { v4 as uuidv4 } from "uuid";
+import imageDatapointService from "../../../services/imageDatapointService";
 
 interface DatapointListContainerProps {
   onSelect: (datapoint: Datapoint) => void;
@@ -22,8 +23,8 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
   selectedDatapoint,
 }) => {
   const dispatch = useAppDispatch();
-  const datapoints = useAppSelector(selectAllDatapoints);
-  const datapointsStatus = useAppSelector(selectDatapointsStatus);
+  const datapoints = useAppSelector(selectAllImageDatapoints);
+  const datapointsStatus = useAppSelector(selectImageDatapointsStatus);
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({
     name: "",
@@ -47,20 +48,20 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
 
   useEffect(() => {
     if (datapointsStatus === "idle") {
-      dispatch(fetchDatapoints());
+      dispatch(fetchImageDatapoints());
     }
   }, [dispatch, datapointsStatus]);
 
-  const handleRemoveDatapoint = (datapoint: Datapoint) => {
+  const handleRemoveImageDatapoint = (datapoint: Datapoint) => {
     datapointService
-      .removeDatapoint(datapoint._id)
+      .removeImageDatapoint(datapoint._id)
       .then((result) => {
         dispatch(remove(datapoint));
-        console.log("Datapoint removed:", result);
+        console.log("Image Datapoint removed:", result);
       })
       .catch((error) => {
-        console.error("Failed to remove datapoint:", error);
-        alert("Failed to remove datapoint. Please try again.");
+        console.error("Failed to remove image datapoint:", error);
+        alert("Failed to remove image datapoint. Please try again.");
       });
   };
 
@@ -119,8 +120,8 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
     formData.append("description", form.description);
     formData.append("eventTime", new Date(form.eventTime).toISOString());
     formData.append("GPSlocation", JSON.stringify(gps || null));
-    datapointService
-      .uploadDatapoint(formData)
+    imageDatapointService
+      .uploadImageDatapoint(formData)
       .then((response) => {
         const jobID = response.data.jobID;
         setPendingDatapoints((prev) =>
@@ -135,7 +136,7 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
             id: jobID,
             onComplete: () => {
               // When job is done, fetch datapoints and update pending entry
-              dispatch(fetchDatapoints()).then((action: any) => {
+              dispatch(fetchImageDatapoints()).then((action: any) => {
                 // Try to find the new datapoint by name (or other unique info)
                 const newDatapoint = action.payload?.find(
                   (d: Datapoint) => d.name === form.name
@@ -277,7 +278,7 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
                   className="text-red-500 hover:text-red-700 transition-colors"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleRemoveDatapoint(datapoint);
+                    handleRemoveImageDatapoint(datapoint);
                   }}
                 >
                   X

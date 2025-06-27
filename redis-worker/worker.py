@@ -22,7 +22,7 @@ def fetchInference(input_path, filename):
         'input_path': input_path,
         'output_path': output_path
     }
-    response = requests.post(api_url, json=payload, timeout=5)
+    response = requests.post(api_url, json=payload, timeout=100)
     response.raise_for_status()
     result = response.json()
     print(f"Received response: {result}")

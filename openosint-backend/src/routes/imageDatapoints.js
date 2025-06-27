@@ -1,12 +1,11 @@
 import express from "express";
 import path from "path";
-import fs, { stat } from "fs";
+import fs from "fs";
 import { fileTypeFromBuffer } from "file-type";
 import multer from "multer";
-import datapointModel from "../models/Datapoint.js";
+import imageDatapointModel from "../models/ImageDatapoint.js";
 import ExifReader from "exifreader";
 
-import config from "../config.js";
 import redis from "../redisClient.js";
 
 import { v4 as uuidv4 } from "uuid";
@@ -26,7 +25,7 @@ if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }
 
-router.post("/upload", multerUpload.single("file"), async (req, res) => {
+router.post("/", multerUpload.single("file"), async (req, res) => {
   const raw_datapoint = req.body;
 
   const parsedGPS = raw_datapoint.GPSlocation
@@ -61,7 +60,7 @@ router.post("/upload", multerUpload.single("file"), async (req, res) => {
     return res.status(400).send("File must be an image").end();
   }
 
-  datapointModel
+  imageDatapointModel
     .create(datapoint)
     .then((createdDatapoint) => {
       const filePath = path.join(uploadDir, datapoint.filename);
@@ -103,7 +102,7 @@ router.get("/:amount&:offset", (req, res) => {
   const amount = parseInt(req.params.amount, 10) || 10;
   const offset = parseInt(req.params.offset, 10) || 0;
 
-  datapointModel
+  imageDatapointModel
     .find({})
     .skip(offset)
     .limit(amount)
@@ -117,7 +116,7 @@ router.get("/:amount&:offset", (req, res) => {
 });
 
 router.get("/", (req, res) => {
-  datapointModel
+  imageDatapointModel
     .find({})
     .then((datapoints) => {
       res.status(200).json(datapoints).end();
@@ -130,7 +129,9 @@ router.get("/", (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    const datapoint = await datapointModel.findByIdAndDelete(req.params.id);
+    const datapoint = await imageDatapointModel.findByIdAndDelete(
+      req.params.id
+    );
     if (!datapoint) {
       return res.status(404).json({ error: "Datapoint not found" });
     }
@@ -148,7 +149,7 @@ router.delete("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try {
-    const updatedDatapoint = await datapointModel.findByIdAndUpdate(
+    const updatedDatapoint = await imageDatapointModel.findByIdAndUpdate(
       req.params.id,
       req.body,
       { new: true }

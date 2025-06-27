@@ -2,7 +2,7 @@ import db from "../mongodb.js";
 import mongoose from "mongoose";
 import { pointSchema } from "./Point.js";
 
-const datapointSchema = new mongoose.Schema(
+const imageDatapointSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -32,5 +32,8 @@ const datapointSchema = new mongoose.Schema(
   { timestamps: true, _id: true }
 );
 
-const datapointModel = mongoose.model("Datapoint", datapointSchema);
-export default datapointModel;
+const imageDatapointModel = mongoose.model(
+  "ImageDatapoint",
+  imageDatapointSchema
+);
+export default imageDatapointModel;

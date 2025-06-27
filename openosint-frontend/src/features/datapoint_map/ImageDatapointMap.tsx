@@ -1,7 +1,7 @@
 import React from "react";
 import { useAppSelector } from "../../reduxHooks";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-import { selectAllDatapoints } from "../../slices/datapointSlice";
+import { selectAllImageDatapoints } from "../../slices/imageDatapointSlice";
 import L from "leaflet";
 import "./leaflet_custom_icons.css";
 
@@ -26,7 +26,7 @@ interface DatapointMapProps {
 }
 
 const DatapointMap: React.FC<DatapointMapProps> = ({ datapointId }) => {
-  const datapoints = useAppSelector(selectAllDatapoints);
+  const datapoints = useAppSelector(selectAllImageDatapoints);
 
   return (
     <div data-testid="datapoint-map-container" className="flex-1 flex-col h-full bg-[#101010] p-4 rounded flex items-center justify-center text-gray-400">

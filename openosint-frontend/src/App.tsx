@@ -1,8 +1,8 @@
 import { useState } from "react";
-import DataPointExplorer from "./features/datapoint_explorer/DatapointExplorer";
-import DatapointViewer from "./features/datapoint_viewer/DatapointViewer";
+import DataPointExplorer from "./features/datapoint_explorer/ImageDatapointExplorer";
+import DatapointViewer from "./features/datapoint_viewer/ImageDatapointViewer";
 import type { Datapoint } from "./types/datapoint";
-import DatapointMap from "./features/datapoint_map/DatapointMap";
+import DatapointMap from "./features/datapoint_map/ImageDatapointMap";
 import Toolbar from "./features/datapoint_explorer/components/Toolbar";
 import type { ToolbarView } from "./types/toolbarView";
 import { ResizableBox } from "react-resizable";
