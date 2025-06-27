@@ -13,7 +13,6 @@ const DatapointExplorer: React.FC<DatapointExplorerProps> = ({
 }) => {
   return (
     <div className="flex flex-col gap-4 flex-1 max-w-5xl h-full justify p-4">
-      <DatapointUploadContainer />
       <DatapointListContainer
         onSelect={setSelectedDatapoint}
         selectedDatapoint={selectedDatapoint}
