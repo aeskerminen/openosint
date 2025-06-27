@@ -1,4 +1,3 @@
-import DatapointUploadContainer from "./components/DatapointUploadContainer";
 import DatapointListContainer from "./components/DatapointListContainer";
 import type { Datapoint } from "../../types/datapoint";
 
