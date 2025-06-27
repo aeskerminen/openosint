@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "../../../reduxHooks";
 import datapointService from "../../../services/datapointService";
 import { remove } from "../../../slices/datapointSlice";
 import { useJobStatus } from "../hooks/useJobStatus";
+import { v4 as uuidv4 } from "uuid";
 
 interface DatapointListContainerProps {
   onSelect: (datapoint: Datapoint) => void;
@@ -32,6 +33,15 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
     latitude: "",
     file: null as File | null,
   });
+  const [pendingDatapoints, setPendingDatapoints] = useState<{
+    tempId: string;
+    jobId: string;
+    name: string;
+    createdAt: string;
+    status: "processing" | "done" | "error";
+    realDatapoint?: Datapoint;
+    fadeOut?: boolean;
+  }[]>([]);
 
   useEffect(() => {
     if (datapointsStatus === "idle") {
@@ -52,9 +62,8 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
       });
   };
 
-  const [jobList, setJobList] = useState<
-    { id: string; status: string; onComplete: () => void }[]
-  >([]);
+  // Fix jobList type: only id and onComplete
+  const [jobList, setJobList] = useState<{ id: string; onComplete: () => void }[]>([]);
 
   const handleModalInput = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -72,6 +81,17 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
       alert("Please select a file to upload.");
       return;
     }
+    const tempId = uuidv4();
+    setPendingDatapoints((prev) => [
+      ...prev,
+      {
+        tempId,
+        jobId: "",
+        name: form.name,
+        createdAt: new Date().toISOString(),
+        status: "processing",
+      },
+    ]);
 
     const hasValidCoords =
       form.longitude !== "" &&
@@ -98,24 +118,56 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
     datapointService
       .uploadDatapoint(formData)
       .then((response) => {
+        const jobID = response.data.jobID;
+        setPendingDatapoints((prev) =>
+          prev.map((dp) =>
+            dp.tempId === tempId ? { ...dp, jobId: jobID } : dp
+          )
+        );
+        // Add job to jobList for useJobStatus
         setJobList((prev) => [
           ...prev,
           {
-            id: response.data.jobID,
-            status: "processing",
+            id: jobID,
             onComplete: () => {
-              setJobList((currentJobs) =>
-                currentJobs.map((job) =>
-                  job.id === response.data.jobID
-                    ? { ...job, status: "completed" }
-                    : job
-                )
-              );
+              // When job is done, fetch datapoints and update pending entry
+              dispatch(fetchDatapoints()).then((action: any) => {
+                // Try to find the new datapoint by name (or other unique info)
+                const newDatapoint = action.payload?.find(
+                  (d: Datapoint) => d.name === form.name
+                );
+                if (newDatapoint) {
+                  setPendingDatapoints((prev) =>
+                    prev.map((dp) =>
+                      dp.tempId === tempId
+                        ? { ...dp, status: "done", realDatapoint: newDatapoint }
+                        : dp
+                    )
+                  );
+                  // Start fade out timer
+                  setTimeout(() => {
+                    setPendingDatapoints((prev) =>
+                      prev.filter((dp) => dp.tempId !== tempId)
+                    );
+                  }, 2000);
+                } else {
+                  setPendingDatapoints((prev) =>
+                    prev.map((dp) =>
+                      dp.tempId === tempId ? { ...dp, status: "error" } : dp
+                    )
+                  );
+                }
+              });
             },
           },
         ]);
       })
       .catch(() => {
+        setPendingDatapoints((prev) =>
+          prev.map((dp) =>
+            dp.tempId === tempId ? { ...dp, status: "error" } : dp
+          )
+        );
         alert("Failed to upload file. Please try again.");
       })
       .finally(() => {
@@ -147,6 +199,51 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
           data-testid="datapoint-list-container"
           className="flex flex-col gap-2"
         >
+          {/* Render pending datapoints first */}
+          {pendingDatapoints.map((dp) => (
+            <div
+              key={dp.tempId}
+              className={`flex items-center gap-4 p-2 bg-[#232323] rounded opacity-70 ${
+                dp.status === "done" ? "animate-fadeOut" : ""
+              }`}
+            >
+              <div className="w-12 h-12 flex items-center justify-center bg-gray-700 rounded border border-[#444]">
+                {/* Optionally show a spinner or checkmark */}
+                {dp.status === "processing" && (
+                  <span className="loader mr-2" />
+                )}
+                {dp.status === "done" && (
+                  <span className="text-green-400 text-xl">✔</span>
+                )}
+                {dp.status === "error" && (
+                  <span className="text-red-400 text-xl">!</span>
+                )}
+              </div>
+              <div className="flex flex-col flex-1">
+                <span className="text-white font-semibold">
+                  {dp.realDatapoint?.name || dp.name}
+                </span>
+                <span className="text-xs text-gray-400">
+                  {dp.realDatapoint?.createdAt || dp.createdAt}
+                </span>
+                <span
+                  className={`text-xs mt-1 ${
+                    dp.status === "processing"
+                      ? "text-yellow-400"
+                      : dp.status === "done"
+                      ? "text-green-400"
+                      : "text-red-400"
+                  }`}
+                >
+                  {dp.status === "processing"
+                    ? "Processing..."
+                    : dp.status === "done"
+                    ? "Done"
+                    : "Error"}
+                </span>
+              </div>
+            </div>
+          ))}
           {datapoints.map((datapoint: Datapoint) => {
             const date = new Date(datapoint.createdAt);
             return (
@@ -186,16 +283,6 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
               </div>
             );
           })}
-          {jobList.map((job) => (
-            <div
-              key={job.id}
-              className="flex items-center gap-4 p-2 bg-[#232323] rounded cursor-pointer hover:bg-[#333] transition-all"
-            >
-              <span className="text-white font-semibold">
-                Job ID: {job.id}, status: {job.status}
-              </span>
-            </div>
-          ))}
         </div>
       </div>
       {showModal && (
@@ -281,3 +368,13 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
 };
 
 export default DatapointListContainer;
+
+/* CSS for fade out animation (add to your CSS):
+.animate-fadeOut {
+  animation: fadeOut 2s forwards;
+}
+@keyframes fadeOut {
+  0% { opacity: 0.7; }
+  100% { opacity: 0; height: 0; margin: 0; padding: 0; }
+}
+*/
