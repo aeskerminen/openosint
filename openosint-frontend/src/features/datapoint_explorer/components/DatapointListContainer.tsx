@@ -33,15 +33,17 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
     latitude: "",
     file: null as File | null,
   });
-  const [pendingDatapoints, setPendingDatapoints] = useState<{
-    tempId: string;
-    jobId: string;
-    name: string;
-    createdAt: string;
-    status: "processing" | "done" | "error";
-    realDatapoint?: Datapoint;
-    fadeOut?: boolean;
-  }[]>([]);
+  const [pendingDatapoints, setPendingDatapoints] = useState<
+    {
+      tempId: string;
+      jobId: string;
+      name: string;
+      createdAt: string;
+      status: "processing" | "done" | "error";
+      realDatapoint?: Datapoint;
+      fadeOut?: boolean;
+    }[]
+  >([]);
 
   useEffect(() => {
     if (datapointsStatus === "idle") {
@@ -63,7 +65,9 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
   };
 
   // Fix jobList type: only id and onComplete
-  const [jobList, setJobList] = useState<{ id: string; onComplete: () => void }[]>([]);
+  const [jobList, setJobList] = useState<
+    { id: string; onComplete: () => void }[]
+  >([]);
 
   const handleModalInput = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -209,9 +213,7 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
             >
               <div className="w-12 h-12 flex items-center justify-center bg-gray-700 rounded border border-[#444]">
                 {/* Optionally show a spinner or checkmark */}
-                {dp.status === "processing" && (
-                  <span className="loader mr-2" />
-                )}
+                {dp.status === "processing" && <span className="loader mr-2" />}
                 {dp.status === "done" && (
                   <span className="text-green-400 text-xl">✔</span>
                 )}
@@ -368,13 +370,3 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
 };
 
 export default DatapointListContainer;
-
-/* CSS for fade out animation (add to your CSS):
-.animate-fadeOut {
-  animation: fadeOut 2s forwards;
-}
-@keyframes fadeOut {
-  0% { opacity: 0.7; }
-  100% { opacity: 0; height: 0; margin: 0; padding: 0; }
-}
-*/
