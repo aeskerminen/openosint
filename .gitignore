@@ -168,4 +168,5 @@ output/
 /blob-report/
 /playwright/.cache/
 /test-input-files
-/certs
+certs/
+ai-test/
