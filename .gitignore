@@ -170,3 +170,4 @@ output/
 /test-input-files
 certs/
 ai-test/
+shared-data/
