@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import imageDatapointReducer from "./slices/imageDatapointSlice";
+import textDatapointReducer from "./slices/textDatapointSlice";
 
 export const store = configureStore({
   reducer: {
     imageDatapoints: imageDatapointReducer,
+    textDatapoints: textDatapointReducer,
   },
 });
 
