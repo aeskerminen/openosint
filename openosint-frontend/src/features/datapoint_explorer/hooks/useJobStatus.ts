@@ -2,32 +2,32 @@ import { useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 import { config } from "../../../config";
 
-export const useJobStatus = (jobID: string, onComplete: () => void) => {
+// Accepts a list of jobs: { id: string, onComplete: () => void }
+export const useJobStatus = (jobList: { id: string; onComplete: () => void }[]) => {
   const socketRef = useRef<any>(null);
 
   useEffect(() => {
-    if (!jobID) return;
+    if (!jobList || jobList.length === 0) return;
 
-    console.log(jobID)
-
-    const socket = io(config.NGINX_BASE_URL, {path: "/socket.io"});
+    const socket = io(config.NGINX_BASE_URL, { path: "/socket.io" });
     socketRef.current = socket;
 
     socket.on("connect", () => {
-      console.log("Connected via WebSocket");
-      socket.emit("subscribe", jobID);
+      jobList.forEach((job) => {
+        socket.emit("subscribe", job.id);
+      });
     });
 
     socket.on("done", (data: any) => {
-
-      if (data.jobID === jobID) {
-        console.log("Job completed:", jobID);
-        onComplete();
+      const job = jobList.find((j) => j.id === data.jobID);
+      if (job) {
+        job.onComplete();
       }
     });
 
     return () => {
       socket.disconnect();
     };
-  }, [jobID, onComplete]);
+    // Use JSON.stringify to avoid missing changes in jobList
+  }, [JSON.stringify(jobList)]);
 };

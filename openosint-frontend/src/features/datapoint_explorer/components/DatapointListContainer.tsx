@@ -52,6 +52,10 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
       });
   };
 
+  const [jobList, setJobList] = useState<
+    { id: string; status: string; onComplete: () => void }[]
+  >([]);
+
   const handleModalInput = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -94,8 +98,22 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
     datapointService
       .uploadDatapoint(formData)
       .then((response) => {
-        setStatus("processing");
-        setJobID(response.data.jobID);
+        setJobList((prev) => [
+          ...prev,
+          {
+            id: response.data.jobID,
+            status: "processing",
+            onComplete: () => {
+              setJobList((currentJobs) =>
+                currentJobs.map((job) =>
+                  job.id === response.data.jobID
+                    ? { ...job, status: "completed" }
+                    : job
+                )
+              );
+            },
+          },
+        ]);
       })
       .catch(() => {
         alert("Failed to upload file. Please try again.");
@@ -105,14 +123,9 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
       });
   };
 
-  const [jobID, setJobID] = useState<string>("");
-  const [status, setStatus] = useState<string>("idle");
-
-  useJobStatus(jobID, () => {
-    setStatus("done");
-    setJobID("");
-    dispatch(fetchDatapoints());
-  });
+  useJobStatus(
+    jobList.map((job) => ({ id: job.id, onComplete: job.onComplete }))
+  );
 
   return (
     <div className="flex-1">
@@ -173,6 +186,16 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
               </div>
             );
           })}
+          {jobList.map((job) => (
+            <div
+              key={job.id}
+              className="flex items-center gap-4 p-2 bg-[#232323] rounded cursor-pointer hover:bg-[#333] transition-all"
+            >
+              <span className="text-white font-semibold">
+                Job ID: {job.id}, status: {job.status}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
       {showModal && (
