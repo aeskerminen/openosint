@@ -54,7 +54,7 @@ export const datapointSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchDatapoints.pending, (state, action) => {
+      .addCase(fetchDatapoints.pending, (state) => {
         state.status = "pending";
       })
       .addCase(fetchDatapoints.fulfilled, (state, action) => {
