@@ -3,6 +3,7 @@ import cors from "cors";
 import morgan from "morgan";
 import { createServer } from "http";
 import imageDatapointsRouter from "./routes/imageDatapoints.js";
+import textDatapointsRouter from "./routes/textDatapoints.js";
 import config from "./config.js";
 import { Server} from "socket.io";
 import redis from "./redisClient.js";
@@ -47,6 +48,7 @@ socketIOserver.on("connection", (socket) => {
 })();
 
 app.use("/api/imageDatapoints", imageDatapointsRouter);
+app.use("/api/textDatapoints", textDatapointsRouter);
 
 httpServer.listen(config.BACKEND_PORT, () => {
   console.log(`Example app listening on port ${config.BACKEND_PORT}`);
