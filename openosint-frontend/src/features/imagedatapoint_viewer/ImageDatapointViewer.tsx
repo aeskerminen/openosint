@@ -1,7 +1,6 @@
 import type { Datapoint } from "../../types/datapoint";
 import { config } from "../../config";
 import React, { useState } from "react";
-import imageDataointService from "../../services/imageDatapointService";
 import { useAppDispatch, useAppSelector } from "../../reduxHooks";
 import { update } from "../../slices/imageDatapointSlice";
 import imageDatapointService from "../../services/imageDatapointService";
@@ -165,12 +164,15 @@ const DatapointViewer = ({ datapointId, onUpdate }: DatapointViewerProps) => {
             ] as [number, number],
           }
         : undefined;
-      const res = await imageDatapointService.updateImageDatapoint(datapoint._id, {
-        name: form.name,
-        description: form.description,
-        eventTime: form.eventTime,
-        GPSlocation: gps,
-      });
+      const res = await imageDatapointService.updateImageDatapoint(
+        datapoint._id,
+        {
+          name: form.name,
+          description: form.description,
+          eventTime: form.eventTime,
+          GPSlocation: gps,
+        }
+      );
       setEditMode(false);
       if (onUpdate) onUpdate(res.data);
       // Update Redux with correct GPSlocation object
