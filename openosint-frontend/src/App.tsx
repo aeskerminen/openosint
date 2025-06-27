@@ -100,7 +100,7 @@ const App = () => {
       <div className="flex flex-row flex-1 h-0 w-full overflow-hidden">
         {/* Sidebar */}
         <div
-          className={`fixed top-14 left-0 h-[calc(100vh-56px)] z-40 bg-[#232526] flex flex-col items-center py-6 px-2 min-w-[70px] shadow-lg transition-transform duration-300 ${
+          className={`fixed top-14 left-0 h-[calc(100vh-56px)] z-40 bg-[#232526] flex flex-col items-center gap-2 py-6 px-2 min-w-[70px] shadow-lg transition-transform duration-300 ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
           style={{ willChange: "transform" }}
@@ -108,7 +108,7 @@ const App = () => {
           {components.map((comp) => (
             <button
               key={comp.name}
-              className={`mb-4 p-3 rounded-full transition-all duration-200 flex flex-col items-center justify-center text-gray-300 hover:bg-blue-600 hover:text-white ${
+              className={`w-full rounded-full transition-all duration-200 flex flex-col items-center justify-center text-gray-300 hover:bg-blue-600 hover:text-white ${
                 activeComponent === comp.name ? "bg-blue-600 text-white" : ""
               }`}
               onClick={() => {
@@ -117,8 +117,8 @@ const App = () => {
               }}
               title={comp.displayName}
             >
-              {comp.icon}
-              <span className="text-xs mt-1 whitespace-nowrap">
+              <span className="flex gap-2 justify-center items-center">
+                {comp.icon}
                 {comp.displayName}
               </span>
             </button>
