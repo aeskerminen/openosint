@@ -10,16 +10,16 @@ def dummy_inference():
    
 def main():
     if len(sys.argv) != 3:
-        print("Usage: python dummy_inference.py <input_path> <filename>")
+        print("Usage: python dummy_inference.py <input_path> <output_path>")
         sys.exit(1)
 
     input_path = sys.argv[1]
-    filename = sys.argv[2]
+    output_path = sys.argv[2]
 
     img = dummy_inference()
-    img.save(f"/data/output/{filename}")
+    img.save(output_path)
 
-    print(f"Random image saved to /data/output/{filename}")
+    print(f"Random image saved to {output_path}")
 
 
 if __name__ == "__main__":
