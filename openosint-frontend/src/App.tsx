@@ -7,6 +7,7 @@ import Toolbar from "./features/datapoint_explorer/components/Toolbar";
 import type { ToolbarView } from "./types/toolbarView";
 import { ResizableBox } from "react-resizable";
 import "react-resizable/css/styles.css";
+import { FaList, FaMapMarkedAlt } from "react-icons/fa";
 
 const App = () => {
   const [selectedDatapoint, setSelectedDatapoint] = useState<Datapoint | null>(
@@ -14,8 +15,8 @@ const App = () => {
   );
 
   const views: Array<ToolbarView> = [
-    { name: "DatapointViewer" },
-    { name: "DatapointMap" },
+    { name: "datapoint_viewer", displayName: "Datapoint Viewer", icon: <FaList /> },
+    { name: "datapoint_map", displayName: "Datapoint Map", icon: <FaMapMarkedAlt /> },
   ];
   const [currentView, setCurrentView] = useState<string>(views[0].name);
 
@@ -51,8 +52,6 @@ const App = () => {
       </div>
     );
   };
-
-
 
   return (
     <div className="h-full w-full">
