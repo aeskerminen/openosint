@@ -65,3 +65,8 @@ services:
 volumes:
   mongo-data:
   data-volume:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/huber/openosint/shared-data
