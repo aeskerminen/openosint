@@ -199,74 +199,97 @@ const DatapointViewer = ({ datapointId, onUpdate }: DatapointViewerProps) => {
         />
       </div>
       <div
-        className="w-full bg-[#121212] p-4 rounded-b flex flex-col border-t border-[#222]"
+        className="w-full bg-[#121212] p-4 rounded-b flex flex-row border-t border-[#222] gap-4"
         style={{ minHeight: "120px" }}
       >
-        {editMode ? (
-          <DatapointEditor
-            form={form}
-            onChange={handleChange}
-            onSave={handleSave}
-            onCancel={() => setEditMode(false)}
-            saving={saving}
-            error={error}
-          />
-        ) : (
-          <>
-            <div className="text-white text-lg font-bold flex items-center gap-2 w-full">
-              <p data-testid="datapoint-viewer-attribute-name">
-                {datapoint.name}
-              </p>
-              <button
-                className="ml-2 text-xs bg-gray-900 px-2 py-1 rounded ml-auto"
-                onClick={() => setEditMode(true)}
-              >
-                Edit
-              </button>
-            </div>
-            <div className="text-gray-400 text-sm mb-1">
-              Event Time:
-              <span data-testid="datapoint-viewer-attribute-eventtime">
-                {datapoint.eventTime
-                  ? new Date(datapoint.eventTime).toLocaleString()
-                  : "N/A"}
-              </span>
-            </div>
-            <div className="text-gray-300 text-sm mb-1">
-              Description:
-              <span data-testid="datapoint-viewer-attribute-description">
-                {datapoint.description || "No description"}
-              </span>
-            </div>
-            <div className="text-gray-300 text-sm mb-1">
-              GPS Location:
-              <span data-testid="datapoint-viewer-attribute-longitude">
-                {datapoint.GPSlocation
-                  ? `${datapoint.GPSlocation.coordinates[0]}`
-                  : "N/A"}
-              </span>
-              <span>,</span>
-              <span data-testid="datapoint-viewer-attribute-latitude">
-                {datapoint.GPSlocation
-                  ? `${datapoint.GPSlocation.coordinates[1]}`
-                  : "N/A"}
-              </span>
-            </div>
-            <hr className="w-full border-t border-[#333] my-2" />
-            <div className="text-gray-500 text-xs mt-1">
-              ID:
-              <span data-testid="datapoint-viewer-attribute-id">
-                {datapoint._id}
-              </span>
-            </div>
-            <div className="text-gray-400 text-sm mb-1">
-              Created:
-              <span data-testid="datapoint-viewer-attribute-createdat">
-                {new Date(datapoint.createdAt).toLocaleString()}
-              </span>
-            </div>
-          </>
-        )}
+        {/* Left: original info and edit */}
+        <div className="flex-1 flex flex-col min-w-0">
+          {editMode ? (
+            <DatapointEditor
+              form={form}
+              onChange={handleChange}
+              onSave={handleSave}
+              onCancel={() => setEditMode(false)}
+              saving={saving}
+              error={error}
+            />
+          ) : (
+            <>
+              <div className="text-white text-lg font-bold flex items-center gap-2 w-full">
+                <p data-testid="datapoint-viewer-attribute-name">
+                  {datapoint.name}
+                </p>
+                <button
+                  className="ml-2 text-xs bg-gray-900 px-2 py-1 rounded ml-auto"
+                  onClick={() => setEditMode(true)}
+                >
+                  Edit
+                </button>
+              </div>
+              <div className="text-gray-400 text-sm mb-1">
+                Event Time:
+                <span data-testid="datapoint-viewer-attribute-eventtime">
+                  {datapoint.eventTime
+                    ? new Date(datapoint.eventTime).toLocaleString()
+                    : "N/A"}
+                </span>
+              </div>
+              <div className="text-gray-300 text-sm mb-1">
+                Description:
+                <span data-testid="datapoint-viewer-attribute-description">
+                  {datapoint.description || "No description"}
+                </span>
+              </div>
+              <div className="text-gray-300 text-sm mb-1">
+                GPS Location:
+                <span data-testid="datapoint-viewer-attribute-longitude">
+                  {datapoint.GPSlocation
+                    ? `${datapoint.GPSlocation.coordinates[0]}`
+                    : "N/A"}
+                </span>
+                <span>,</span>
+                <span data-testid="datapoint-viewer-attribute-latitude">
+                  {datapoint.GPSlocation
+                    ? `${datapoint.GPSlocation.coordinates[1]}`
+                    : "N/A"}
+                </span>
+              </div>
+              <hr className="w-full border-t border-[#333] my-2" />
+              <div className="text-gray-500 text-xs mt-1">
+                ID:
+                <span data-testid="datapoint-viewer-attribute-id">
+                  {datapoint._id}
+                </span>
+              </div>
+              <div className="text-gray-400 text-sm mb-1">
+                Created:
+                <span data-testid="datapoint-viewer-attribute-createdat">
+                  {new Date(datapoint.createdAt).toLocaleString()}
+                </span>
+              </div>
+            </>
+          )}
+        </div>
+        {/* Right: EXIF data */}
+        <div className="flex-1 flex flex-col min-w-0 border-l border-[#222] pl-4">
+          <div className="text-white text-lg font-bold mb-2">EXIF Data</div>
+          <div className="text-xs text-gray-300 whitespace-pre-wrap break-all overflow-y-auto max-h-48">
+            {datapoint.exifData ? (
+              (() => {
+                try {
+                  const parsed = JSON.parse(datapoint.exifData);
+                  return (
+                    <pre className="whitespace-pre-wrap break-all">{JSON.stringify(parsed, null, 2)}</pre>
+                  );
+                } catch {
+                  return datapoint.exifData;
+                }
+              })()
+            ) : (
+              "No EXIF data available."
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

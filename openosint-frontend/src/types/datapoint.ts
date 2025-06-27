@@ -9,6 +9,7 @@ export type Datapoint = {
   filename: string;
   description: string;
   eventTime: string;
+  exifData: string;
   GPSlocation?: GPSLocation;
   createdAt: string;
   updatedAt: string;

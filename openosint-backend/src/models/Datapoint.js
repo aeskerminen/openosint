@@ -20,6 +20,10 @@ const datapointSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    exifData: {
+      type: String,
+      default: "",
+    },
     GPSlocation: {
       type: pointSchema,
       required: false,

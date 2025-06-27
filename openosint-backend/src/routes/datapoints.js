@@ -4,6 +4,7 @@ import fs, { stat } from "fs";
 import { fileTypeFromBuffer } from "file-type";
 import multer from "multer";
 import datapointModel from "../models/Datapoint.js";
+import ExifReader from "exifreader";
 
 import config from "../config.js";
 import redis from "../redisClient.js";
@@ -35,11 +36,17 @@ router.post("/upload", multerUpload.single("file"), async (req, res) => {
     ? new Date(raw_datapoint.eventTime)
     : undefined;
 
+  const exif = await ExifReader.load(req.file.buffer, {
+    async: true,
+    expanded: true,
+  });
+
   const datapoint = {
     name: raw_datapoint.name,
     description: raw_datapoint.description,
     filename: raw_datapoint.filename,
     eventTime: parsedEventTime,
+    exifData: JSON.stringify(exif),
     GPSlocation: parsedGPS,
   };
 
