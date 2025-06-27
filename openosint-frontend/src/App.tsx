@@ -7,16 +7,27 @@ import Toolbar from "./features/datapoint_explorer/components/Toolbar";
 import type { ToolbarView } from "./types/toolbarView";
 import { ResizableBox } from "react-resizable";
 import "react-resizable/css/styles.css";
-import { FaList, FaMapMarkedAlt } from "react-icons/fa";
+import { FaList, FaMapMarkedAlt, FaBrain, FaBars } from "react-icons/fa";
+import TexTintelligence from "./features/text_intelligence/TextIntelligence";
+import { FaPaperclip } from "react-icons/fa6";
 
 const App = () => {
   const [selectedDatapoint, setSelectedDatapoint] = useState<Datapoint | null>(
     null
   );
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const views: Array<ToolbarView> = [
-    { name: "datapoint_viewer", displayName: "Datapoint Viewer", icon: <FaList /> },
-    { name: "datapoint_map", displayName: "Datapoint Map", icon: <FaMapMarkedAlt /> },
+    {
+      name: "datapoint_viewer",
+      displayName: "Datapoint Viewer",
+      icon: <FaList />,
+    },
+    {
+      name: "datapoint_map",
+      displayName: "Datapoint Map",
+      icon: <FaMapMarkedAlt />,
+    },
   ];
   const [currentView, setCurrentView] = useState<string>(views[0].name);
 
@@ -53,14 +64,77 @@ const App = () => {
     );
   };
 
-  return (
-    <div className="h-full w-full">
-      {/* Image intelligence  */}
-      <ImageIntelligenceComponent></ImageIntelligenceComponent>
-      {/* End of Image intelligence  */}
+  const components = [
+    {
+      name: "image_intelligence",
+      displayName: "Image Intelligence",
+      icon: <FaBrain />,
+      component: ImageIntelligenceComponent,
+    },
+    {
+      name: "text_intelligence",
+      displayName: "Text Intelligence",
+      icon: <FaPaperclip />,
+      component: TexTintelligence,
+    },
+    // Add more components here as needed
+  ];
+  const [activeComponent, setActiveComponent] = useState(components[0].name);
 
-      {/* Text intelligence*/}
-      {/* End of Text intelligence */}
+  return (
+    <div className="h-screen w-screen flex flex-col overflow-hidden">
+      {/* Top bar with burger */}
+      <div className="w-full h-14 flex items-center bg-[#232526] shadow z-50 px-4 flex-shrink-0">
+        <button
+          className="bg-[#232526] p-2 rounded-full shadow text-gray-200 hover:bg-blue-600 hover:text-white transition-all focus:outline-none"
+          onClick={() => setSidebarOpen((open) => !open)}
+          title={sidebarOpen ? "Hide menu" : "Show menu"}
+          style={{ outline: "none" }}
+        >
+          <FaBars size={22} />
+        </button>
+        <span className="ml-4 text-lg font-bold text-gray-200 tracking-wide">
+          OpenOSINT
+        </span>
+      </div>
+      <div className="flex flex-row flex-1 h-0 w-full overflow-hidden">
+        {/* Sidebar */}
+        <div
+          className={`fixed top-14 left-0 h-[calc(100vh-56px)] z-40 bg-[#232526] flex flex-col items-center py-6 px-2 min-w-[70px] shadow-lg transition-transform duration-300 ${
+            sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+          style={{ willChange: "transform" }}
+        >
+          {components.map((comp) => (
+            <button
+              key={comp.name}
+              className={`mb-4 p-3 rounded-full transition-all duration-200 flex flex-col items-center justify-center text-gray-300 hover:bg-blue-600 hover:text-white ${
+                activeComponent === comp.name ? "bg-blue-600 text-white" : ""
+              }`}
+              onClick={() => {
+                setActiveComponent(comp.name);
+                setSidebarOpen(false);
+              }}
+              title={comp.displayName}
+            >
+              {comp.icon}
+              <span className="text-xs mt-1 whitespace-nowrap">
+                {comp.displayName}
+              </span>
+            </button>
+          ))}
+        </div>
+        {/* Main content */}
+        <div
+          className="flex-1 h-full ml-0 overflow-hidden"
+          style={{
+            marginLeft: sidebarOpen ? 70 : 0,
+            transition: "margin-left 0.3s",
+          }}
+        >
+          {components.find((c) => c.name === activeComponent)?.component()}
+        </div>
+      </div>
     </div>
   );
 };
