@@ -1,9 +1,11 @@
 import sys
+from time import sleep
 import numpy as np
 from PIL import Image
 
 def dummy_inference():
     img_array = np.random.randint(0, 256, (256, 256, 3), dtype=np.uint8)
+    sleep(10)
     return Image.fromarray(img_array, 'RGB')
    
 def main():
