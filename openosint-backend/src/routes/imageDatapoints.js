@@ -98,23 +98,6 @@ router.post("/", multerUpload.single("file"), async (req, res) => {
     });
 });
 
-router.get("/:amount&:offset", (req, res) => {
-  const amount = parseInt(req.params.amount, 10) || 10;
-  const offset = parseInt(req.params.offset, 10) || 0;
-
-  imageDatapointModel
-    .find({})
-    .skip(offset)
-    .limit(amount)
-    .then((datapoints) => {
-      res.status(200).json(datapoints).end();
-    })
-    .catch((err) => {
-      console.error("Error fetching datapoints:", err);
-      res.status(500).send("Error fetching datapoints").end();
-    });
-});
-
 router.get("/", (req, res) => {
   imageDatapointModel
     .find({})
