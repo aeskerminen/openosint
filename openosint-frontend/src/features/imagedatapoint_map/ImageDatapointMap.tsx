@@ -29,7 +29,10 @@ const DatapointMap: React.FC<DatapointMapProps> = ({ datapointId }) => {
   const datapoints = useAppSelector(selectAllImageDatapoints);
 
   return (
-    <div data-testid="datapoint-map-container" className="flex-1 flex-col h-full bg-[#101010] p-4 rounded flex items-center justify-center text-gray-400">
+    <div
+      data-testid="datapoint-map-container"
+      className="flex-1 flex-col h-full bg-[#101010] p-4 rounded flex items-center justify-center text-gray-400"
+    >
       <MapContainer
         style={{ height: "100%", width: "100%" }}
         center={[60.16, 24.9]}
@@ -61,24 +64,24 @@ const DatapointMap: React.FC<DatapointMapProps> = ({ datapointId }) => {
               }
             >
               <Popup>
-                <div className="text-sm w-56">
-                  <div className="font-bold text-base mb-1">{dp.name}</div>
-                  <div className="text-gray-400 text-xs mb-1">
-                    Event Time:{" "}
+                <div className="text-sm">
+                  <div className="font-bold text-base">{dp.name}</div>
+                  <div>
+                    Event Time:
                     {dp.eventTime
                       ? new Date(dp.eventTime).toLocaleString()
                       : "N/A"}
                   </div>
-                  <div className="text-gray-500 text-xs mb-1">ID: {dp._id}</div>
-                  <div className="text-gray-400 text-xs mb-1">
-                    Created:{" "}
+                  <div>ID: {dp._id}</div>
+                  <div>
+                    Created:
                     {dp.createdAt
                       ? new Date(dp.createdAt).toLocaleString()
                       : "N/A"}
                   </div>
                   {dp.GPSlocation && (
-                    <div className="text-gray-400 text-xs mb-1">
-                      GPS: [{dp.GPSlocation.coordinates[0]},{" "}
+                    <div>
+                      GPS: [{dp.GPSlocation.coordinates[0]},
                       {dp.GPSlocation.coordinates[1]}]
                     </div>
                   )}
