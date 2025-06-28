@@ -1,9 +1,9 @@
 import DatapointListContainer from "./components/ImageDatapointListContainer";
-import type { Datapoint } from "../../types/datapoint";
+import type { ImageDatapoint } from "../../types/imageDatapoint";
 
 interface DatapointExplorerProps {
-  selectedDatapoint: Datapoint | null;
-  setSelectedDatapoint: (datapoint: Datapoint) => void;
+  selectedDatapoint: ImageDatapoint | null;
+  setSelectedDatapoint: (datapoint: ImageDatapoint) => void;
 }
 
 const DatapointExplorer: React.FC<DatapointExplorerProps> = ({

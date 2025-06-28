@@ -1,6 +1,6 @@
 import axios from "axios";
 import { config } from "../config";
-import type { Datapoint } from "../types/datapoint";
+import type { ImageDatapoint } from "../types/imageDatapoint";
 
 const imageDatapointUrl = `${config.API_BASE_URL}/imageDatapoints`;
 
@@ -15,7 +15,7 @@ const uploadImageDatapoint = async (datapoint: FormData) => {
 };
 
 const getImageDatapoints = async () => {
-  const req = axios.get<Datapoint[]>(`${imageDatapointUrl}`);
+  const req = axios.get<ImageDatapoint[]>(`${imageDatapointUrl}`);
   return req;
 };
 
@@ -26,7 +26,7 @@ const removeImageDatapoint = async (datapointId: string) => {
 
 const updateImageDatapoint = async (
   datapointId: string,
-  updatedData: Partial<Datapoint>
+  updatedData: Partial<ImageDatapoint>
 ) => {
   const req = axios.put(`${imageDatapointUrl}/${datapointId}`, updatedData);
   return req;

@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { Datapoint } from "../types/datapoint";
+import type { ImageDatapoint } from "../types/imageDatapoint";
 import type { RootState } from "../store";
 import imageDatapointService from "../services/imageDatapointService";
 
 interface imageDatapointState {
-  value: Array<Datapoint>;
+  value: Array<ImageDatapoint>;
   status: "idle" | "pending" | "succeeded" | "failed";
   error: string | null;
 }

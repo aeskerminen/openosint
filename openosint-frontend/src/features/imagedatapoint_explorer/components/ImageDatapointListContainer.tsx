@@ -5,7 +5,7 @@ import {
   selectAllImageDatapoints,
   selectImageDatapointsStatus,
 } from "../../../slices/imageDatapointSlice";
-import type { Datapoint } from "../../../types/datapoint";
+import type { Datapoint } from "../../../types/imageDatapoint";
 import { useAppDispatch, useAppSelector } from "../../../reduxHooks";
 import datapointService from "../../../services/imageDatapointService";
 import { remove } from "../../../slices/imageDatapointSlice";

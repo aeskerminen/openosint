@@ -1,4 +1,4 @@
-import type { Datapoint } from "../../types/datapoint";
+import type { ImageDatapoint } from "../../types/imageDatapoint";
 import { config } from "../../config";
 import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../reduxHooks";
@@ -7,7 +7,7 @@ import imageDatapointService from "../../services/imageDatapointService";
 
 interface DatapointViewerProps {
   datapointId: string | undefined;
-  onUpdate?: (updated: Datapoint) => void;
+  onUpdate?: (updated: ImageDatapoint) => void;
 }
 
 const DatapointEditor: React.FC<{
@@ -103,7 +103,7 @@ const DatapointEditor: React.FC<{
 
 const DatapointViewer = ({ datapointId, onUpdate }: DatapointViewerProps) => {
   const datapoint = useAppSelector((state) =>
-    state.imageDatapoints.value.find((dp: Datapoint) => dp._id === datapointId)
+    state.imageDatapoints.value.find((dp: ImageDatapoint) => dp._id === datapointId)
   );
 
   const [editMode, setEditMode] = useState(false);

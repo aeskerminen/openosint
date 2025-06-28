@@ -3,7 +3,7 @@ export type GPSLocation = {
   coordinates: [number, number]; // [longitude, latitude]
 };
 
-export type Datapoint = {
+export type ImageDatapoint = {
   _id: string;
   name: string;
   filename: string;

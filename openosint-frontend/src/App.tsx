@@ -1,7 +1,6 @@
 import { useState } from "react";
 import DataPointExplorer from "./features/imagedatapoint_explorer/ImageDatapointExplorer";
 import DatapointViewer from "./features/imagedatapoint_viewer/ImageDatapointViewer";
-import type { Datapoint } from "./types/datapoint";
 import DatapointMap from "./features/imagedatapoint_map/ImageDatapointMap";
 import Toolbar from "./features/imagedatapoint_explorer/components/Toolbar";
 import type { ToolbarView } from "./types/toolbarView";
@@ -11,11 +10,11 @@ import { FaList, FaMapMarkedAlt, FaBrain, FaBars } from "react-icons/fa";
 import { FaPaperclip } from "react-icons/fa6";
 import TextDatapointExplorer from "./features/textdatapoint_explorer/TextDatapointExplorer";
 import TextDatapointViewer from "./features/textdatapoint_viewer/TextDatapointViewer";
+import type { ImageDatapoint } from "./types/imageDatapoint";
 
 const App = () => {
-  const [selectedDatapoint, setSelectedDatapoint] = useState<Datapoint | null>(
-    null
-  );
+  const [selectedImageDatapoint, setSelectedImageDatapoint] =
+    useState<ImageDatapoint | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const ImageDatapointViews: Array<ToolbarView> = [
@@ -52,8 +51,8 @@ const App = () => {
           draggableOpts={{ handle: ".react-resizable-handle" }}
         >
           <DataPointExplorer
-            selectedDatapoint={selectedDatapoint}
-            setSelectedDatapoint={setSelectedDatapoint}
+            selectedDatapoint={selectedImageDatapoint}
+            setSelectedDatapoint={setSelectedImageDatapoint}
           ></DataPointExplorer>
         </ResizableBox>
         <div className="flex-1 h-full flex flex-col max-h-full max-w-full">
@@ -66,10 +65,10 @@ const App = () => {
               setCurrentView={setCurrentView}
             ></Toolbar>
             {currentView === ImageDatapointViews[0].name && (
-              <DatapointViewer datapointId={selectedDatapoint?._id} />
+              <DatapointViewer datapointId={selectedImageDatapoint?._id} />
             )}
             {currentView === ImageDatapointViews[1].name && (
-              <DatapointMap datapointId={selectedDatapoint?._id} />
+              <DatapointMap datapointId={selectedImageDatapoint?._id} />
             )}
           </div>
         </div>
@@ -119,13 +118,11 @@ const App = () => {
       icon: <FaPaperclip />,
       component: TextIntelligenceComponent,
     },
-    // Add more components here as needed
   ];
   const [activeComponent, setActiveComponent] = useState(components[0].name);
 
   return (
     <div className="h-screen w-screen flex flex-col overflow-hidden">
-      {/* Top bar with burger */}
       <div className="w-full h-14 flex items-center bg-[#232526] shadow z-50 px-4 flex-shrink-0">
         <button
           className="bg-[#232526] p-2 rounded-full shadow text-gray-200 hover:bg-blue-600 hover:text-white transition-all focus:outline-none"
@@ -140,7 +137,6 @@ const App = () => {
         </span>
       </div>
       <div className="flex flex-row flex-1 h-0 w-full overflow-hidden">
-        {/* Sidebar */}
         <div
           className={`fixed top-14 left-0 h-[calc(100vh-56px)] z-40 bg-[#232526] flex flex-col items-center gap-2 py-6 px-2 min-w-[70px] shadow-lg transition-transform duration-300 ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
@@ -166,7 +162,6 @@ const App = () => {
             </button>
           ))}
         </div>
-        {/* Main content */}
         <div
           className="flex-1 h-full ml-0 overflow-hidden"
           style={{
