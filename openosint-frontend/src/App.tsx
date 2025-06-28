@@ -8,8 +8,9 @@ import type { ToolbarView } from "./types/toolbarView";
 import { ResizableBox } from "react-resizable";
 import "react-resizable/css/styles.css";
 import { FaList, FaMapMarkedAlt, FaBrain, FaBars } from "react-icons/fa";
-import TexTintelligence from "./features/text_intelligence/TextIntelligence";
 import { FaPaperclip } from "react-icons/fa6";
+import TextDatapointExplorer from "./features/textdatapoint_explorer/TextDatapointExplorer";
+import TextDatapointViewer from "./features/textdatapoint_viewer/TextDatapointViewer";
 
 const App = () => {
   const [selectedDatapoint, setSelectedDatapoint] = useState<Datapoint | null>(
@@ -17,19 +18,28 @@ const App = () => {
   );
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const views: Array<ToolbarView> = [
+  const ImageDatapointViews: Array<ToolbarView> = [
     {
-      name: "datapoint_viewer",
-      displayName: "Datapoint Viewer",
+      name: "image_datapoint_viewer",
+      displayName: "Image Datapoint Viewer",
       icon: <FaList />,
     },
     {
-      name: "datapoint_map",
-      displayName: "Datapoint Map",
+      name: "image_datapoint_map",
+      displayName: "Image Datapoint Map",
       icon: <FaMapMarkedAlt />,
     },
   ];
-  const [currentView, setCurrentView] = useState<string>(views[0].name);
+
+  const TextDatapointViews: Array<ToolbarView> = [
+    {
+      name: "text_datapoint_viewer",
+      displayName: "Text Datapoint Viewer",
+      icon: <FaList />,
+    },
+  ];
+
+  const [currentView, setCurrentView] = useState<string>("");
 
   const ImageIntelligenceComponent = () => {
     return (
@@ -51,11 +61,14 @@ const App = () => {
             id="problem"
             className="flex-1 flex flex-col max-w-full max-h-full"
           >
-            <Toolbar views={views} setCurrentView={setCurrentView}></Toolbar>
-            {currentView === views[0].name && (
+            <Toolbar
+              views={ImageDatapointViews}
+              setCurrentView={setCurrentView}
+            ></Toolbar>
+            {currentView === ImageDatapointViews[0].name && (
               <DatapointViewer datapointId={selectedDatapoint?._id} />
             )}
-            {currentView === views[1].name && (
+            {currentView === ImageDatapointViews[1].name && (
               <DatapointMap datapointId={selectedDatapoint?._id} />
             )}
           </div>
@@ -64,6 +77,35 @@ const App = () => {
     );
   };
 
+  const TextIntelligenceComponent = () => {
+    return (
+      <div className="flex flex-row h-full w-full">
+        <ResizableBox
+          width={300}
+          height={Infinity}
+          minConstraints={[200, 100]}
+          maxConstraints={[500, Infinity]}
+          draggableOpts={{ handle: ".react-resizable-handle" }}
+        >
+          <TextDatapointExplorer></TextDatapointExplorer>
+        </ResizableBox>
+        <div className="flex-1 h-full flex flex-col max-h-full max-w-full">
+          <div
+            id="problem"
+            className="flex-1 flex flex-col max-w-full max-h-full"
+          >
+            <Toolbar
+              views={TextDatapointViews}
+              setCurrentView={setCurrentView}
+            ></Toolbar>
+            {currentView === TextDatapointViews[0].name && (
+              <TextDatapointViewer />
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
   const components = [
     {
       name: "image_intelligence",
@@ -75,7 +117,7 @@ const App = () => {
       name: "text_intelligence",
       displayName: "Text Intelligence",
       icon: <FaPaperclip />,
-      component: TexTintelligence,
+      component: TextIntelligenceComponent,
     },
     // Add more components here as needed
   ];

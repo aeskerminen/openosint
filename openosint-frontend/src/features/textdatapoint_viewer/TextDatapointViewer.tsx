@@ -1,4 +1,4 @@
-const TextIntelligence = () => {
+const TextDatapointViewer = () => {
   return (
     <div>
       <h1>Text Intelligence</h1>
@@ -7,4 +7,5 @@ const TextIntelligence = () => {
   );
 };
 
-export default TextIntelligence;
+
+export default TextDatapointViewer;
