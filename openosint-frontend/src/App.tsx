@@ -2,7 +2,7 @@ import { useState } from "react";
 import DataPointExplorer from "./features/imagedatapoint_explorer/ImageDatapointExplorer";
 import DatapointViewer from "./features/imagedatapoint_viewer/ImageDatapointViewer";
 import DatapointMap from "./features/imagedatapoint_map/ImageDatapointMap";
-import Toolbar from "./features/imagedatapoint_explorer/components/Toolbar";
+import Toolbar from "./Toolbar";
 import type { ToolbarView } from "./types/toolbarView";
 import { ResizableBox } from "react-resizable";
 import "react-resizable/css/styles.css";
@@ -13,123 +13,129 @@ import TextDatapointViewer from "./features/textdatapoint_viewer/TextDatapointVi
 import type { ImageDatapoint } from "./types/imageDatapoint";
 import type { TextDatapoint } from "./types/textDatapoint";
 
-const App = () => {
+const ImageDatapointViews: Array<ToolbarView> = [
+  {
+    name: "image_datapoint_viewer",
+    displayName: "Image Datapoint Viewer",
+    icon: <FaList />,
+  },
+  {
+    name: "image_datapoint_map",
+    displayName: "Image Datapoint Map",
+    icon: <FaMapMarkedAlt />,
+  },
+];
+
+const TextDatapointViews: Array<ToolbarView> = [
+  {
+    name: "text_datapoint_viewer",
+    displayName: "Text Datapoint Viewer",
+    icon: <FaList />,
+  },
+];
+
+const ImageIntelligenceComponent = () => {
   const [selectedImageDatapoint, setSelectedImageDatapoint] =
     useState<ImageDatapoint | null>(null);
-  const [selectedTextDatapoint, setSelectedTextDatapoint] =
-    useState<TextDatapoint | null>(null);
-
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const ImageDatapointViews: Array<ToolbarView> = [
-    {
-      name: "image_datapoint_viewer",
-      displayName: "Image Datapoint Viewer",
-      icon: <FaList />,
-    },
-    {
-      name: "image_datapoint_map",
-      displayName: "Image Datapoint Map",
-      icon: <FaMapMarkedAlt />,
-    },
-  ];
-
-  const TextDatapointViews: Array<ToolbarView> = [
-    {
-      name: "text_datapoint_viewer",
-      displayName: "Text Datapoint Viewer",
-      icon: <FaList />,
-    },
-  ];
-
-  const [currentView, setCurrentView] = useState<string>("");
-
-  const ImageIntelligenceComponent = () => {
-    return (
-      <div className="flex flex-row h-full w-full">
-        <ResizableBox
-          width={300}
-          height={Infinity}
-          minConstraints={[200, 100]}
-          maxConstraints={[500, Infinity]}
-          draggableOpts={{ handle: ".react-resizable-handle" }}
-        >
-          <DataPointExplorer
-            selectedDatapoint={selectedImageDatapoint}
-            setSelectedDatapoint={setSelectedImageDatapoint}
-          ></DataPointExplorer>
-        </ResizableBox>
-        <div className="flex-1 h-full flex flex-col max-h-full max-w-full">
-          <div
-            id="problem"
-            className="flex-1 flex flex-col max-w-full max-h-full"
-          >
-            <Toolbar
-              views={ImageDatapointViews}
-              setCurrentView={setCurrentView}
-            ></Toolbar>
-            {currentView === ImageDatapointViews[0].name && (
-              <DatapointViewer datapointId={selectedImageDatapoint?._id} />
-            )}
-            {currentView === ImageDatapointViews[1].name && (
-              <DatapointMap datapointId={selectedImageDatapoint?._id} />
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const TextIntelligenceComponent = () => {
-    return (
-      <div className="flex flex-row h-full w-full">
-        <ResizableBox
-          width={300}
-          height={Infinity}
-          minConstraints={[200, 100]}
-          maxConstraints={[500, Infinity]}
-          draggableOpts={{ handle: ".react-resizable-handle" }}
-        >
-          <TextDatapointExplorer
-            setSelectedTextDatapoint={setSelectedTextDatapoint}
-            selectedTextDatapoint={selectedTextDatapoint}
-          ></TextDatapointExplorer>
-        </ResizableBox>
-        <div className="flex-1 h-full flex flex-col max-h-full max-w-full">
-          <div
-            id="problem"
-            className="flex-1 flex flex-col max-w-full max-h-full"
-          >
-            <Toolbar
-              views={TextDatapointViews}
-              setCurrentView={setCurrentView}
-            ></Toolbar>
-            {currentView === TextDatapointViews[0].name && (
-              <TextDatapointViewer textDatapoint={selectedTextDatapoint} />
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  };
-  const components = [
-    {
-      name: "image_intelligence",
-      displayName: "Image Intelligence",
-      icon: <FaBrain />,
-      component: ImageIntelligenceComponent,
-    },
-    {
-      name: "text_intelligence",
-      displayName: "Text Intelligence",
-      icon: <FaPaperclip />,
-      component: TextIntelligenceComponent,
-    },
-  ];
-  const [activeComponent, setActiveComponent] = useState(components[0].name);
+  const [currentView, setCurrentView] = useState<string>(
+    ImageDatapointViews[0].name
+  );
 
   return (
-    <div className="h-screen w-screen flex flex-col overflow-hidden">
+    <div className="flex flex-row h-full w-full">
+      <ResizableBox
+        width={300}
+        height={Infinity}
+        minConstraints={[200, 100]}
+        maxConstraints={[500, Infinity]}
+        draggableOpts={{ handle: ".react-resizable-handle" }}
+      >
+        <DataPointExplorer
+          selectedDatapoint={selectedImageDatapoint}
+          setSelectedDatapoint={setSelectedImageDatapoint}
+        ></DataPointExplorer>
+      </ResizableBox>
+      <div className="flex-1 h-full flex flex-col max-h-full max-w-full">
+        <div
+          id="problem"
+          className="flex-1 flex flex-col max-w-full max-h-full"
+        >
+          <Toolbar
+            views={ImageDatapointViews}
+            setCurrentView={setCurrentView}
+          ></Toolbar>
+          {currentView === ImageDatapointViews[0].name && (
+            <DatapointViewer datapointId={selectedImageDatapoint?._id} />
+          )}
+          {currentView === ImageDatapointViews[1].name && (
+            <DatapointMap datapointId={selectedImageDatapoint?._id} />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const TextIntelligenceComponent = () => {
+  const [selectedTextDatapoint, setSelectedTextDatapoint] =
+    useState<TextDatapoint | null>(null);
+  const [currentView, setCurrentView] = useState<string>(
+    TextDatapointViews[0].name
+  );
+
+  return (
+    <div className="flex flex-row h-full w-full">
+      <ResizableBox
+        width={300}
+        height={Infinity}
+        minConstraints={[200, 100]}
+        maxConstraints={[500, Infinity]}
+        draggableOpts={{ handle: ".react-resizable-handle" }}
+      >
+        <TextDatapointExplorer
+          setSelectedTextDatapoint={setSelectedTextDatapoint}
+          selectedTextDatapoint={selectedTextDatapoint}
+        ></TextDatapointExplorer>
+      </ResizableBox>
+      <div className="flex-1 h-full flex flex-col max-h-full max-w-full">
+        <div
+          id="problem"
+          className="flex-1 flex flex-col max-w-full max-h-full"
+        >
+          <Toolbar
+            views={TextDatapointViews}
+            setCurrentView={setCurrentView}
+          ></Toolbar>
+          {currentView === TextDatapointViews[0].name && (
+            <TextDatapointViewer textDatapoint={selectedTextDatapoint} />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const components = [
+  {
+    name: "image_intelligence",
+    displayName: "Image Intelligence",
+    icon: <FaBrain />,
+    component: ImageIntelligenceComponent,
+  },
+  {
+    name: "text_intelligence",
+    displayName: "Text Intelligence",
+    icon: <FaPaperclip />,
+    component: TextIntelligenceComponent,
+  },
+];
+
+const App = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activeComponent, setActiveComponent] = useState(components[0].name);
+
+  const Navbar = () => {
+    return (
       <div className="w-full h-14 flex items-center bg-[#232526] shadow z-50 px-4 flex-shrink-0">
         <button
           className="bg-[#232526] p-2 rounded-full shadow text-gray-200 hover:bg-blue-600 hover:text-white transition-all focus:outline-none"
@@ -143,34 +149,46 @@ const App = () => {
           OpenOSINT
         </span>
       </div>
-      <div className="flex flex-row flex-1 h-0 w-full overflow-hidden">
+    );
+  };
+
+  const Sidebar = () => {
+    return (
+      <div
+        className={`fixed h-[calc(100vh-56px)] z-40 bg-[#232526] flex flex-col p-4 items-center gap-2 shadow-lg transition-transform duration-300 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+        style={{ willChange: "transform" }}
+      >
+        {components.map((comp) => (
+          <button
+            key={comp.name}
+            className={`w-full rounded-full transition-all duration-200 flex flex-col items-center justify-center ${
+              activeComponent === comp.name ? "bg-blue-600 text-white" : ""
+            }`}
+            onClick={() => {
+              setActiveComponent(comp.name);
+              setSidebarOpen(false);
+            }}
+            title={comp.displayName}
+          >
+            <span className="flex gap-2 justify-center items-center">
+              {comp.icon}
+              {comp.displayName}
+            </span>
+          </button>
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <div className="h-screen w-screen flex flex-col">
+      <Navbar></Navbar>
+      <div className="flex flex-row flex-1 h-0 w-full">
+        <Sidebar></Sidebar>
         <div
-          className={`fixed top-14 left-0 h-[calc(100vh-56px)] z-40 bg-[#232526] flex flex-col items-center gap-2 py-6 px-2 min-w-[70px] shadow-lg transition-transform duration-300 ${
-            sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
-          style={{ willChange: "transform" }}
-        >
-          {components.map((comp) => (
-            <button
-              key={comp.name}
-              className={`w-full rounded-full transition-all duration-200 flex flex-col items-center justify-center text-gray-300 hover:bg-blue-600 hover:text-white ${
-                activeComponent === comp.name ? "bg-blue-600 text-white" : ""
-              }`}
-              onClick={() => {
-                setActiveComponent(comp.name);
-                setSidebarOpen(false);
-              }}
-              title={comp.displayName}
-            >
-              <span className="flex gap-2 justify-center items-center">
-                {comp.icon}
-                {comp.displayName}
-              </span>
-            </button>
-          ))}
-        </div>
-        <div
-          className="flex-1 h-full ml-0 overflow-hidden"
+          className="flex-1 h-full"
           style={{
             marginLeft: sidebarOpen ? 70 : 0,
             transition: "margin-left 0.3s",
