@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { io } from "socket.io-client";
-import { config } from "../../../config";
+import {config} from "../config"; 
 
 // Accepts a list of jobs: { id: string, onComplete: () => void }
 export const useJobStatus = (jobList: { id: string; onComplete: () => void }[]) => {

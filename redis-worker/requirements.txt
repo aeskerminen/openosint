@@ -3,3 +3,4 @@ redis
 numpy
 Pillow
 requests
+dotenv

@@ -1,70 +1,84 @@
-import { config } from "../../../config";
 import React, { useEffect, useState } from "react";
 import {
-  fetchImageDatapoints,
-  selectAllImageDatapoints,
-  selectImageDatapointsStatus,
-} from "../../../slices/imageDatapointSlice";
-import type { ImageDatapoint } from "../../../types/imageDatapoint";
+  fetchTextDatapoints,
+  selectAllTextDatapoints,
+  selectTextDatapointsStatus,
+  remove,
+} from "../../../slices/textDatapointSlice";
+import type { TextDatapoint } from "../../../types/textDatapoint";
 import { useAppDispatch, useAppSelector } from "../../../reduxHooks";
-import { remove } from "../../../slices/imageDatapointSlice";
 import { useJobStatus } from "../../../hooks/useJobStatus";
 import { v4 as uuidv4 } from "uuid";
-import imageDatapointService from "../../../services/imageDatapointService";
+import textDatapointService from "../../../services/textDatapointService";
 
-interface DatapointListContainerProps {
-  onSelect: (datapoint: ImageDatapoint) => void;
-  selectedDatapoint: ImageDatapoint | null;
+interface TextDatapointListContainerProps {
+  onSelect: (datapoint: TextDatapoint) => void;
+  selectedDatapoint: TextDatapoint | null;
 }
 
-const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
+const TextDatapointListContainer: React.FC<TextDatapointListContainerProps> = ({
   onSelect,
   selectedDatapoint,
 }) => {
   const dispatch = useAppDispatch();
-  const datapoints = useAppSelector(selectAllImageDatapoints);
-  const datapointsStatus = useAppSelector(selectImageDatapointsStatus);
+  const datapoints = useAppSelector(selectAllTextDatapoints);
+  const datapointsStatus = useAppSelector(selectTextDatapointsStatus);
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({
-    name: "",
-    description: "",
+    title: "",
+    raw_text: "",
+    source: {
+      platform: "",
+      url: "",
+      username: "",
+    },
+    language: "",
+    translation: "",
     eventTime: "",
     longitude: "",
     latitude: "",
-    file: null as File | null,
+    tags: "",
+    entities: {
+      persons: [],
+      organizations: [],
+      locations: [],
+    },
+    sentiment: "",
+    notes: "",
+    linked_imagedatapoint_ids: [],
+    createdAt: "",
   });
   const [pendingDatapoints, setPendingDatapoints] = useState<
     {
       tempId: string;
       jobId: string;
-      name: string;
+      title: string;
       createdAt: string;
       status: "processing" | "done" | "error";
-      realDatapoint?: ImageDatapoint;
+      realDatapoint?: TextDatapoint;
       fadeOut?: boolean;
     }[]
   >([]);
 
   useEffect(() => {
     if (datapointsStatus === "idle") {
-      dispatch(fetchImageDatapoints());
+      dispatch(fetchTextDatapoints());
     }
   }, [dispatch, datapointsStatus]);
 
-  const handleRemoveImageDatapoint = (datapoint: ImageDatapoint) => {
-    imageDatapointService
-      .removeImageDatapoint(datapoint._id)
+  const handleRemoveImageDatapoint = (datapoint: TextDatapoint) => {
+    textDatapointService
+      .removeTextDatapoint(datapoint._id)
       .then((result) => {
         dispatch(remove(datapoint));
-        console.log("Image Datapoint removed:", result);
+        console.log("Text Datapoint removed:", result);
       })
       .catch((error) => {
-        console.error("Failed to remove image datapoint:", error);
-        alert("Failed to remove image datapoint. Please try again.");
+        console.error("Failed to remove text datapoint:", error);
+        alert("Failed to remove text datapoint. Please try again.");
       });
   };
 
-  // Fix jobList type: only id and onComplete
   const [jobList, setJobList] = useState<
     { id: string; onComplete: () => void }[]
   >([]);
@@ -75,23 +89,60 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, file: e.target.files ? e.target.files[0] : null });
+  const prepareDatapointPayload = (form): Partial<TextDatapoint> => {
+    const {
+      title,
+      raw_text,
+      source,
+      language,
+      translation,
+      eventTime,
+      longitude,
+      latitude,
+      tags,
+      entities,
+      sentiment,
+      notes,
+      linked_imagedatapoint_ids,
+      createdAt,
+    } = form;
+
+    const payload: Partial<TextDatapoint> = {
+      title,
+      raw_text,
+      source,
+      language,
+      translation,
+      eventTime: eventTime || undefined,
+      location:
+        latitude && longitude
+          ? {
+              latitude: parseFloat(latitude),
+              longitude: parseFloat(longitude),
+              source: "user",
+            }
+          : undefined,
+      tags: tags ? tags.split(",").map((tag) => tag.trim()) : undefined,
+      entities,
+      sentiment,
+      notes,
+      linked_image_ids: linked_imagedatapoint_ids,
+      createdAt,
+    };
+
+    return payload;
   };
 
   const handleModalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.file) {
-      alert("Please select a file to upload.");
-      return;
-    }
+
     const tempId = uuidv4();
     setPendingDatapoints((prev) => [
       ...prev,
       {
         tempId,
         jobId: "",
-        name: form.name,
+        title: form.title,
         createdAt: new Date().toISOString(),
         status: "processing",
       },
@@ -113,14 +164,8 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
         }
       : undefined;
 
-    const formData = new FormData();
-    formData.append("file", form.file);
-    formData.append("name", form.name);
-    formData.append("description", form.description);
-    formData.append("eventTime", new Date(form.eventTime).toISOString());
-    formData.append("GPSlocation", JSON.stringify(gps || null));
-    imageDatapointService
-      .uploadImageDatapoint(formData)
+    textDatapointService
+      .uploadTextDatapoint(prepareDatapointPayload(form))
       .then((response) => {
         const jobID = response.data.jobID;
         setPendingDatapoints((prev) =>
@@ -128,17 +173,14 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
             dp.tempId === tempId ? { ...dp, jobId: jobID } : dp
           )
         );
-        // Add job to jobList for useJobStatus
         setJobList((prev) => [
           ...prev,
           {
             id: jobID,
             onComplete: () => {
-              // When job is done, fetch datapoints and update pending entry
-              dispatch(fetchImageDatapoints()).then((action: any) => {
-                // Try to find the new datapoint by name (or other unique info)
+              dispatch(fetchTextDatapoints()).then((action: any) => {
                 const newDatapoint = action.payload?.find(
-                  (d: ImageDatapoint) => d.name === form.name
+                  (d: TextDatapoint) => d.title === form.title
                 );
                 if (newDatapoint) {
                   setPendingDatapoints((prev) =>
@@ -148,7 +190,6 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
                         : dp
                     )
                   );
-                  // Start fade out timer
                   setTimeout(() => {
                     setPendingDatapoints((prev) =>
                       prev.filter((dp) => dp.tempId !== tempId)
@@ -203,7 +244,6 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
           data-testid="datapoint-list-container"
           className="flex flex-col gap-2"
         >
-          {/* Render pending datapoints first */}
           {pendingDatapoints.map((dp) => (
             <div
               key={dp.tempId}
@@ -212,7 +252,6 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
               }`}
             >
               <div className="w-12 h-12 flex items-center justify-center bg-gray-700 rounded border border-[#444]">
-                {/* Optionally show a spinner or checkmark */}
                 {dp.status === "processing" && <span className="loader mr-2" />}
                 {dp.status === "done" && (
                   <span className="text-green-400 text-xl">✔</span>
@@ -223,7 +262,7 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
               </div>
               <div className="flex flex-col flex-1">
                 <span className="text-white font-semibold">
-                  {dp.realDatapoint?.name || dp.name}
+                  {dp.realDatapoint?.title || dp.title}
                 </span>
                 <span className="text-xs text-gray-400">
                   {dp.realDatapoint?.createdAt || dp.createdAt}
@@ -246,7 +285,7 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
               </div>
             </div>
           ))}
-          {datapoints.map((datapoint: ImageDatapoint) => {
+          {datapoints.map((datapoint: TextDatapoint) => {
             const date = new Date(datapoint.createdAt);
             return (
               <div
@@ -259,14 +298,9 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
                 }`}
                 onClick={() => onSelect(datapoint)}
               >
-                <img
-                  src={`${config.API_BASE_URL}/images/${datapoint.filename}`}
-                  alt={datapoint.name}
-                  className="w-12 h-12 object-cover rounded border border-[#444]"
-                />
                 <div className="flex flex-col flex-1">
                   <span className="text-white font-semibold">
-                    {datapoint.name}
+                    {datapoint.title}
                   </span>
                   <span className="text-xs text-gray-400">
                     {date.toLocaleString()}
@@ -295,21 +329,21 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
             style={{ minWidth: 350 }}
           >
             <h2 className="text-2xl font-bold text-white mb-2">
-              Add New Datapoint
+              Add New Text Datapoint
             </h2>
             <input
               className="p-2 rounded bg-[#181818] text-white border border-[#444]"
-              name="name"
-              placeholder="Name"
-              value={form.name}
+              name="title"
+              placeholder="Title"
+              value={form.title}
               onChange={handleModalInput}
               required
             />
             <textarea
               className="p-2 rounded bg-[#181818] text-white border border-[#444]"
-              name="description"
-              placeholder="Description"
-              value={form.description}
+              name="raw_text"
+              placeholder="Raw text"
+              value={form.raw_text}
               onChange={handleModalInput}
               rows={2}
             />
@@ -340,13 +374,6 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
                 step="any"
               />
             </div>
-            <input
-              className="p-2 rounded bg-[#181818] text-white border border-[#444]"
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              required
-            />
             <div className="flex gap-2 mt-2">
               <button
                 type="submit"
@@ -369,4 +396,4 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
   );
 };
 
-export default DatapointListContainer;
+export default TextDatapointListContainer;

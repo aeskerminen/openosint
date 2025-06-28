@@ -4,8 +4,10 @@ import TextDatapointModel from "../models/TextDatapoint.js";
 const router = express.Router();
 
 router.post("/", async (req, res) => {
+  const raw_datapoint = { title: req.body.title, raw_text: req.body.raw_text };
+
   try {
-    const textDatapoint = await TextDatapointModel.create(req.body);
+    const textDatapoint = await TextDatapointModel.create(raw_datapoint);
     res.status(201).json(textDatapoint);
   } catch (err) {
     console.error("Error creating text datapoint:", err);
@@ -13,21 +15,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/:amount&:offset", async (req, res) => {
-  const amount = parseInt(req.params.amount, 10) || 10;
-  const offset = parseInt(req.params.offset, 10) || 0;
-  try {
-    const datapoints = await TextDatapointModel.find({})
-      .skip(offset)
-      .limit(amount);
-    res.status(200).json(datapoints).end();
-  } catch (err) {
-    console.error("Error fetching text datapoints:", err);
-    res.status(500).send("Error fetching text datapoints").end();
-  }
-});
-
-// Get all text datapoints
 router.get("/", async (req, res) => {
   try {
     const datapoints = await TextDatapointModel.find({});

@@ -2,15 +2,16 @@ import axios from "axios";
 import { config } from "../config";
 import type { TextDatapoint } from "../types/textDatapoint";
 
-const textDatapointUrl = `${config.API_BASE_URL}/textdatapoints`;
+const textDatapointUrl = `${config.API_BASE_URL}/textDatapoints`;
 
 const getTextDatapoints = async () => {
   return axios.get<TextDatapoint[]>(textDatapointUrl);
 };
 
-const addTextDatapoint = async (data: Partial<TextDatapoint>) => {
+const uploadTextDatapoint = async (data: Partial<TextDatapoint>) => {
   return axios.post(textDatapointUrl, data);
 };
+
 
 const updateTextDatapoint = async (
   id: string,
@@ -25,7 +26,7 @@ const removeTextDatapoint = async (id: string) => {
 
 const textDatapointService = {
   getTextDatapoints,
-  addTextDatapoint,
+  uploadTextDatapoint,
   updateTextDatapoint,
   removeTextDatapoint,
 };

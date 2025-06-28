@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+
 
 const TextDatapointSchema = new mongoose.Schema(
   {
@@ -62,4 +63,4 @@ const TextDatapointSchema = new mongoose.Schema(
 );
 
 const TextDatapointModel = mongoose.model("TextDatapoint", TextDatapointSchema);
-module.exports = TextDatapointModel;
+export default TextDatapointModel;

@@ -30,6 +30,6 @@ export type TextDatapoint = {
   };
   notes?: string;
   linked_image_ids?: string[];
-  createdAt?: string;
+  createdAt: string;
   updatedAt?: string;
 };

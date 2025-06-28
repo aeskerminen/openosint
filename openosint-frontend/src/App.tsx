@@ -11,10 +11,14 @@ import { FaPaperclip } from "react-icons/fa6";
 import TextDatapointExplorer from "./features/textdatapoint_explorer/TextDatapointExplorer";
 import TextDatapointViewer from "./features/textdatapoint_viewer/TextDatapointViewer";
 import type { ImageDatapoint } from "./types/imageDatapoint";
+import type { TextDatapoint } from "./types/textDatapoint";
 
 const App = () => {
   const [selectedImageDatapoint, setSelectedImageDatapoint] =
     useState<ImageDatapoint | null>(null);
+  const [selectedTextDatapoint, setSelectedTextDatapoint] =
+    useState<TextDatapoint | null>(null);
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const ImageDatapointViews: Array<ToolbarView> = [
@@ -86,7 +90,10 @@ const App = () => {
           maxConstraints={[500, Infinity]}
           draggableOpts={{ handle: ".react-resizable-handle" }}
         >
-          <TextDatapointExplorer></TextDatapointExplorer>
+          <TextDatapointExplorer
+            setSelectedTextDatapoint={setSelectedTextDatapoint}
+            selectedTextDatapoint={selectedTextDatapoint}
+          ></TextDatapointExplorer>
         </ResizableBox>
         <div className="flex-1 h-full flex flex-col max-h-full max-w-full">
           <div
@@ -98,7 +105,7 @@ const App = () => {
               setCurrentView={setCurrentView}
             ></Toolbar>
             {currentView === TextDatapointViews[0].name && (
-              <TextDatapointViewer />
+              <TextDatapointViewer textDatapoint={selectedTextDatapoint} />
             )}
           </div>
         </div>
