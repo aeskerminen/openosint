@@ -11,13 +11,16 @@ import { remove } from "../../../slices/imageDatapointSlice";
 import { useJobStatus } from "../../../hooks/useJobStatus";
 import { v4 as uuidv4 } from "uuid";
 import imageDatapointService from "../../../services/imageDatapointService";
+import ImageDatapointModal, {
+  type ImageDatapointForm,
+} from "./ImageDatapointModal";
 
-interface DatapointListContainerProps {
+interface ImageDatapointListProps {
   onSelect: (datapoint: ImageDatapoint) => void;
   selectedDatapoint: ImageDatapoint | null;
 }
 
-const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
+const ImageDatapointList: React.FC<ImageDatapointListProps> = ({
   onSelect,
   selectedDatapoint,
 }) => {
@@ -25,14 +28,7 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
   const datapoints = useAppSelector(selectAllImageDatapoints);
   const datapointsStatus = useAppSelector(selectImageDatapointsStatus);
   const [showModal, setShowModal] = useState(false);
-  const [form, setForm] = useState({
-    name: "",
-    description: "",
-    eventTime: "",
-    longitude: "",
-    latitude: "",
-    file: null as File | null,
-  });
+
   const [pendingDatapoints, setPendingDatapoints] = useState<
     {
       tempId: string;
@@ -45,41 +41,10 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
     }[]
   >([]);
 
-  useEffect(() => {
-    if (datapointsStatus === "idle") {
-      dispatch(fetchImageDatapoints());
-    }
-  }, [dispatch, datapointsStatus]);
-
-  const handleRemoveImageDatapoint = (datapoint: ImageDatapoint) => {
-    imageDatapointService
-      .removeImageDatapoint(datapoint._id)
-      .then((result) => {
-        dispatch(remove(datapoint));
-        console.log("Image Datapoint removed:", result);
-      })
-      .catch((error) => {
-        console.error("Failed to remove image datapoint:", error);
-        alert("Failed to remove image datapoint. Please try again.");
-      });
-  };
-
-  // Fix jobList type: only id and onComplete
-  const [jobList, setJobList] = useState<
-    { id: string; onComplete: () => void }[]
-  >([]);
-
-  const handleModalInput = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  const handleModalSubmit = async (
+    e: React.FormEvent,
+    form: ImageDatapointForm
   ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, file: e.target.files ? e.target.files[0] : null });
-  };
-
-  const handleModalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.file) {
       alert("Please select a file to upload.");
@@ -128,15 +93,12 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
             dp.tempId === tempId ? { ...dp, jobId: jobID } : dp
           )
         );
-        // Add job to jobList for useJobStatus
         setJobList((prev) => [
           ...prev,
           {
             id: jobID,
             onComplete: () => {
-              // When job is done, fetch datapoints and update pending entry
               dispatch(fetchImageDatapoints()).then((action: any) => {
-                // Try to find the new datapoint by name (or other unique info)
                 const newDatapoint = action.payload?.find(
                   (d: ImageDatapoint) => d.name === form.name
                 );
@@ -148,7 +110,6 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
                         : dp
                     )
                   );
-                  // Start fade out timer
                   setTimeout(() => {
                     setPendingDatapoints((prev) =>
                       prev.filter((dp) => dp.tempId !== tempId)
@@ -179,20 +140,43 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
       });
   };
 
+  useEffect(() => {
+    if (datapointsStatus === "idle") {
+      dispatch(fetchImageDatapoints());
+    }
+  }, [dispatch, datapointsStatus]);
+
+  const handleRemoveImageDatapoint = (datapoint: ImageDatapoint) => {
+    imageDatapointService
+      .removeImageDatapoint(datapoint._id)
+      .then((result) => {
+        dispatch(remove(datapoint));
+        console.log("Image Datapoint removed:", result);
+      })
+      .catch((error) => {
+        console.error("Failed to remove image datapoint:", error);
+        alert("Failed to remove image datapoint. Please try again.");
+      });
+  };
+
+  const [jobList, setJobList] = useState<
+    { id: string; onComplete: () => void }[]
+  >([]);
+
   useJobStatus(
     jobList.map((job) => ({ id: job.id, onComplete: job.onComplete }))
   );
 
   return (
-    <div className="flex-1">
+    <div>
       <div className="flex items-center mb-4">
-        <p className="text-xl font-bold mr-2">Datapoints</p>
+        <p className="text-xl font-bold">Datapoints</p>
         <button
-          className="ml-2 bg-green-500 hover:bg-green-600 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg transition-all"
+          className="rounded-full ml-auto w-8 h-8 flex items-center justify-center"
           title="Add Datapoint"
           onClick={() => setShowModal(true)}
         >
-          <span className="text-2xl leading-none">+</span>
+          <span className="text-2xl">+</span>
         </button>
       </div>
       <div className="bg-[#1a1a1a] p-4 rounded">
@@ -203,7 +187,6 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
           data-testid="datapoint-list-container"
           className="flex flex-col gap-2"
         >
-          {/* Render pending datapoints first */}
           {pendingDatapoints.map((dp) => (
             <div
               key={dp.tempId}
@@ -212,7 +195,6 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
               }`}
             >
               <div className="w-12 h-12 flex items-center justify-center bg-gray-700 rounded border border-[#444]">
-                {/* Optionally show a spinner or checkmark */}
                 {dp.status === "processing" && <span className="loader mr-2" />}
                 {dp.status === "done" && (
                   <span className="text-green-400 text-xl">✔</span>
@@ -288,85 +270,13 @@ const DatapointListContainer: React.FC<DatapointListContainerProps> = ({
         </div>
       </div>
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-          <form
-            className="bg-[#232323] p-8 rounded-lg shadow-2xl flex flex-col gap-4 min-w-[350px] max-w-[90vw]"
-            onSubmit={handleModalSubmit}
-            style={{ minWidth: 350 }}
-          >
-            <h2 className="text-2xl font-bold text-white mb-2">
-              Add New Datapoint
-            </h2>
-            <input
-              className="p-2 rounded bg-[#181818] text-white border border-[#444]"
-              name="name"
-              placeholder="Name"
-              value={form.name}
-              onChange={handleModalInput}
-              required
-            />
-            <textarea
-              className="p-2 rounded bg-[#181818] text-white border border-[#444]"
-              name="description"
-              placeholder="Description"
-              value={form.description}
-              onChange={handleModalInput}
-              rows={2}
-            />
-            <input
-              className="p-2 rounded bg-[#181818] text-white border border-[#444]"
-              name="eventTime"
-              type="datetime-local"
-              value={form.eventTime}
-              onChange={handleModalInput}
-            />
-            <div className="flex gap-2">
-              <input
-                className="p-2 rounded bg-[#181818] text-white border border-[#444] flex-1"
-                name="longitude"
-                placeholder="Longitude"
-                value={form.longitude}
-                onChange={handleModalInput}
-                type="number"
-                step="any"
-              />
-              <input
-                className="p-2 rounded bg-[#181818] text-white border border-[#444] flex-1"
-                name="latitude"
-                placeholder="Latitude"
-                value={form.latitude}
-                onChange={handleModalInput}
-                type="number"
-                step="any"
-              />
-            </div>
-            <input
-              className="p-2 rounded bg-[#181818] text-white border border-[#444]"
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              required
-            />
-            <div className="flex gap-2 mt-2">
-              <button
-                type="submit"
-                className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-2 rounded transition-all"
-              >
-                Upload
-              </button>
-              <button
-                type="button"
-                className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 rounded transition-all"
-                onClick={() => setShowModal(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
+        <ImageDatapointModal
+          handleModalSubmit={handleModalSubmit}
+          setShowModal={setShowModal}
+        ></ImageDatapointModal>
       )}
     </div>
   );
 };
 
-export default DatapointListContainer;
+export default ImageDatapointList;

@@ -1,4 +1,4 @@
-import DatapointListContainer from "./components/ImageDatapointListContainer";
+import DatapointListContainer from "./components/ImageDatapointList";
 import type { ImageDatapoint } from "../../types/imageDatapoint";
 
 interface DatapointExplorerProps {
