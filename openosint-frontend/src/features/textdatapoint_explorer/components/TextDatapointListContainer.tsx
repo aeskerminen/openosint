@@ -66,7 +66,7 @@ const TextDatapointListContainer: React.FC<TextDatapointListContainerProps> = ({
     }
   }, [dispatch, datapointsStatus]);
 
-  const handleRemoveImageDatapoint = (datapoint: TextDatapoint) => {
+  const handleRemoveTextDatapoint = (datapoint: TextDatapoint) => {
     textDatapointService
       .removeTextDatapoint(datapoint._id)
       .then((result) => {
@@ -311,7 +311,7 @@ const TextDatapointListContainer: React.FC<TextDatapointListContainerProps> = ({
                   className="text-red-500 hover:text-red-700 transition-colors"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleRemoveImageDatapoint(datapoint);
+                    handleRemoveTextDatapoint(datapoint);
                   }}
                 >
                   X
