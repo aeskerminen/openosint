@@ -44,15 +44,6 @@ OpenOSINT is an open-source platform for uploading, managing, and visualizing ge
 - Visualize datapoints on an interactive map
 - Monitor ML job status in real time
 
-## Contributing
-
-Contributions are welcome! Please open issues or submit pull requests for new features, bug fixes, or improvements.
-
-1. Fork the repo and clone your fork
-2. Create a new branch for your feature or fix
-3. Make your changes and add tests if applicable
-4. Open a pull request describing your changes
-
 ## Technologies
 
 - React, TypeScript, Vite, Redux, Leaflet
